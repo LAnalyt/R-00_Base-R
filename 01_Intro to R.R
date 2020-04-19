@@ -275,3 +275,153 @@ visitors #(screenshot 1.3 Matrix 8)
 #select the visitors from US
 visitors_us <- visitors[,1]
 visitors_us #(screenshot 1.3 Matrix 9)
+
+#4. FACTORS
+
+#4.1 What is a factor and why we use it?
+
+#Factors refer to a statistical data type used to store categorical values.
+#The difference between a categorical variable and a continuous variable is that a categorical variable can belong to a limited number of categories.
+#create a vector that contains all the observations that belong to a limited number of categories
+sex_vector <- c("Male", "Female", "Female", "Male", "Male")
+#there're two categories here, or the "factor levels" here are "Male" and "Female"
+#convert sex_vector to a factor
+factor_sex_vector <- factor(sex_vector)
+#print out to see the factor levels
+factor_sex_vector #Levels: Female Male (screenshot 1.4 Factor 1)
+
+#There are two types of categorical variables: a nominal categorical variable and an ordinal categorical variable.
+#A nominal variable is a categorical variable without an implied order.
+animals_vector <- c("Elephant", "Giraffe", "Donkey", "Horse")
+factor_animals_vector <- factor(animals_vector)
+#it is impossible to say that 'one is worth more than the other
+factor_animals_vector #Levels: Donkey Elephant Giraffe Horse (screenshot 1.4 Factor 2)
+#In contrast, ordinal variables do have a natural ordering. 
+temperature <-  c("High", "Low", "High", "Low", "Medium")
+factor_temperature <- factor(temperature, ordered = TRUE, levels = c("Low", "Medium", "High"))
+factor_temperature #Levels: Low < Medium < High (screenshot 1.4 Factor 3)
+
+#4.2 Factor levels
+
+#Some datasets contain factors with specific factor levels.
+#to change the names of these levels for clarity: levels()
+#E.g, the sex of the correspondents in a survey were recorded in short as "F" and "M"
+survey_vector <- c("M", "F", "F", "M", "M")
+factor_survey_vector <- factor(survey_vector)
+#specify the levels
+levels(factor_survey_vector) <- c("Female", "Male")
+#print out the result
+factor_survey_vector #[1] Male Female Female Male   Male Levels: Female Male
+
+#4.3 Summarize a factor
+
+#You would like to know how many "Male" and "Female" responses to your survey
+#generate a summary for survey
+summary(survey_vector) #This shows the length, class and mode of the dataset, not what you expect
+#generate a summary for the factored survey (screenshot 1.4 Factor 4)
+summary(factor_survey_vector) #Female 2  Male 3 
+#"Male" and "Female" are nominal (unordered) factor levels and can't be compared.
+
+#4.4 Ordered factors
+
+#Sometimes you will also deal with factors that do have natural ordering
+#E.g, evaluate the performance of 5 data analysts as "slow", "medium" and "fast"
+speed_vector <- c("medium", "slow", "slow", "medium", "fast")
+#speed_vector should be converted into an ordinal factor since its categories have a natural ordering.
+factor_speed_vector <- factor(speed_vector, ordered = TRUE, levels = c("slow", "medium", "fast"))
+#by setting the argument "ordered" to TRUE, you indicate that the factor is ordered.
+#with the argument "levels" you give the values of the factor in the correct order.
+#Now you can compare elements in the vector
+#Compare the performance of data analyst 2 and data analyst 5
+da2 <- factor_speed_vector[2]
+da5 <- factor_speed_vector[5]
+da2 > da5 #FALSE
+
+#5. DATA FRAMES
+
+#5.1 What is a data frame?
+
+#You will often work with data sets that contain different data types instead of only one. 
+#A data frame has the variables of a data set as columns and the observations as rows.
+#Load a built-in example data frame in R called "mtcars"
+mtcars
+#When you work with large data sets and data frames, it's better to develop a clear understanding of its structure and main elements. 
+#Therefore, it is often useful to show only a small part of the entire data set. 
+head(mtcars) #head() shows the first observations of a data frame
+#similarly, tail() function shows the last observations of a data frame
+tail(mtcars) #(screenshot 1.5 Data frame 1-2)
+
+#5.2 Structure of a data frame
+
+#to get a rapid overview of your data is the structure function: str()
+#The total number of observations
+#The total number of variables
+#A full list of the variable names
+#The data type of each variable
+#The first observations
+#Applying the str() function will often be the first thing that you do when receiving a new data set or data frame. 
+#It is a great way to get more insight in your data set before diving into the real analysis.
+str(mtcars) #(screenshot 1.5 Data frame 3)
+
+#5.3 Create a data frame
+
+#construct a data frame that describes the main characteristics of eight planets in our solar system
+name <- c("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+#add the type of planet (Terrestrial or Gas Giant)
+type <- c("Terrestrial planet", "Terrestrial planet", "Terrestrial planet", "Terrestrial planet", "Gas giant", "Gas giant", "Gas giant", "Gas giant")
+#add the planet's diameter relative to the diameter of the Earth
+diameter <- c(0.382, 0.949, 1, 0.532, 11.209, 9.449, 4.007, 3.883)
+#add the planet's rotation across the sun relative to that of the Earth
+rotation <- c(58.64, -243.02, 1, 1.03, 0.41, 0.43, -0.72, 0.67)
+#if the planet has rings or not (TRUE or FALSE).
+rings <- c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+#now create a data frame from those vectors
+planets_df <- data.frame(name, type, diameter, rotation, rings)
+#the vectors become different columns of the data frame
+#Because every column has the same length, the vectors should also have the same length
+planets_df #(screenshot 1.5 Data frame 4)
+#check the structure of the data frame
+str(planets_df)
+
+#5.4 Selection of data frame elements
+
+#Similar to vectors and matrices, select elements from a data frame with square brackets [ ]
+#By using a comma, you can indicate what to select from the rows and the columns respectively.
+#E.g, print out diameter of Mercury (row 1, column 3)
+planets_df[1,3] #0.382
+#print out data for Mars (entire fourth row)
+planets_df[4,] #(screenshot 1.5 Data frame 5)
+#Instead of using numerics, it's also possible to use the variable names to select columns of a data frame.
+planets_df[1:3,2] 
+#or, it is often easier to just make use of the variable name:
+planets_df[1:3, "type"] #(screenshot 1.5 Data frame 6)
+#If you want to select all elements of the variable "diameter":
+planets_df[,3]
+#or
+planets_df[,"diameter"]
+#but the shorter way is using "$" symbol
+planets_df$diameter
+#select the rings variable from "planets_df"
+rings_vector <- planets_df$rings
+#see which planet has a ring
+rings_vector #FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+#This means that the first four observations do not have a ring, but the other four do. 
+#However, you do not get a nice overview of the names of these planets, their diameter, etc. 
+#select all columns for planets with rings
+planets_df[rings_vector,] #to select all columns, leave the columns part inside the [ ] empty
+#or create a subset with a condition from the data frame
+subset(planets_df, subset = rings) #(screenshot 1.5 Data frame 8)
+
+#5.5 Sorting
+
+#In data analysis you can sort data according to a certain variable in the data set.
+#order() is a function that gives the ranked position of each element when it is applied on a variable
+a <- c(100, 10, 1000)
+order(a)
+#This means we can use the output of order(a) to reshuffle a:
+a[order(a)]
+#rearrange the data frame "planets_df" such that it starts with the smallest planet and ends with the largest one.
+#sorting on "diameter" column
+positions <- order(planets_df$diameter)
+#use positions to sort "planets_df"
+planets_df[positions,]
