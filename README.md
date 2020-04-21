@@ -1,4 +1,4 @@
-# RStudio_02_DataCamp
+# R_00_DataCamp
 Notes and exercises from R courses in Datacamp
 
 1. INTRODUCTION TO R
