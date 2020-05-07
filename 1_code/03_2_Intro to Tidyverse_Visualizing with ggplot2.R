@@ -5,7 +5,7 @@
 #Loading the gapminder, dplyr and ggplot2 packages
 library(gapminder) #tracks economic and social indicators of countries over time
 library(dplyr) #provides step-by-step to transform data
-library(ggplpt2)#create elegant data visualisations using the grammar of graphics
+library(ggplot2)#create elegant data visualisations using the grammar of graphics
 #Create a subset for observations in the year 1952
 gapminder_1952 <- gapminder %>% 
   filter(year == 1952)
