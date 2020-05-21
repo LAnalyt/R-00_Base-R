@@ -1,4 +1,4 @@
-# 1 CONDITIONALS AND CONTROL FLOW (cont)
+# 1. CONDITIONALS AND CONTROL FLOW (cont)
 
 # 1.4 Conditional operators ####################################
 # R also provides a way to use the results of the operators to change the behaviour of R scripts.

@@ -1,4 +1,4 @@
-# 1 CONDITIONALS AND CONTROL FLOW
+# 1. CONDITIONALS AND CONTROL FLOW
 
 # 1.1 Relational operators ######################################
 
