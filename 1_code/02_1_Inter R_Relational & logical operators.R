@@ -1,6 +1,6 @@
 # 1 CONDITIONALS AND CONTROL FLOW
 
-# 1.1 Relational operators #######################################
+# 1.1 Relational operators ######################################
 
 # Relational operators, or comparators, are operators which show how one R object relates to another. 
 # Equality operator
@@ -84,4 +84,24 @@ y < 5 | y > 15 # FALSE or FALSE, results in FALSE.
 !TRUE # FALSE
 !FALSE # TRUE
 # Just like AND and OR operators, NOT can be also used in combination with logical operators. This is not always necessary.
-! (X < 5 ) # is exactly the same as x >= 5
+! (x < 5 ) # is exactly the same as x >= 5
+
+# Continue the exercise with linkedin and facebook views. Create a variable for the last day of linkedin
+last <- tail(linkedin, 1)
+# Is last day's views under 5 or above 10?
+last <5 | last > 10 # TRUE
+# Is last day's views between 15 (exclusive) and 20 (inclusive)?
+last > 15 & last <= 20 # FALSE
+# When were one or both visited at least 12 times?
+linkedin >= 12 | facebook >= 12
+# When is views between 11 (exclusive) and 14 (inclusive)?
+views > 11 & views <= 14
+
+# Suppose you conducted a survey for every employee with a LinkedIn profile how many visits their profile has had over the past seven days. Load the csv file and store it in a data frame
+li_df <- read.csv("linkedin.csv") # in 0_data folder
+# Select the second day from the data frame
+second <- li_df[,"day2"]
+# Build a logical vector, TRUE if value in second is extreme
+extremes <- second > 25 | second <5
+# Count the number of TRUEs in extremes
+sum(extremes) 
