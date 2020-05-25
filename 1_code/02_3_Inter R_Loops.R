@@ -60,6 +60,7 @@ while (speed > 30) {
 
 # 2.2 For loop #################################################
 
+# For loop iterates over a sequence where a looping variable changes for each iteration, according to the sequence.
 # Syntax:
 for(var in seq) { # for each variable in the sequence
   expression
