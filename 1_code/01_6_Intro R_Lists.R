@@ -73,3 +73,9 @@ reviews_df <- data.frame(scores, comments)
 departed_list <- list(movie_title, movie_actors, reviews_df, avg_review)
 #Print out the list 
 departed_list
+
+# 6.4 Flatten Lists ####
+
+# In some cases you want to disassemble a list to its atomic components. Unlist() function produces a vector which contains all these components
+unlist(my_list)
+unlist(shining_list)

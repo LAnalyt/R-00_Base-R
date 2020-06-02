@@ -177,3 +177,12 @@ interpret_all <- function(views, return_sum = TRUE) {
 }
 interpret_all(linkedin)
 interpret_all(facebook)
+
+# 3.3 Anonymous functions ####
+
+# Functions in R are objects in their own right. This means that they aren't automatically bound to a name. When you create a function, you can use the assignment operator to give the function a name. It's perfectly possible, however, to not give the function a name. This is called an anonymous function:
+# Named function
+triple <- function(x) { 3 * x }
+# Anonymous function with same implementation
+function(x) { 3 * x }
+# Anonymous functions are helpful when you need to use the function only once, avoid defining it with a name. 
