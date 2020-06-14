@@ -63,3 +63,53 @@ mean(last_5 <= 64)
 mean(my_class >= 70 & my_class <= 85)
 # How many students in the last 5 years had a grade of 80 or 90?
 sum(last_5 == 80 | last_5 == 90)
+
+# if, else ####
+
+# Recall the syntax of if-else
+if (me > 80) {
+  print("Good student!")
+} else {
+  print("Better luck nex year!")  
+} # your grade (me) = 89, so the condition in the if statement evaluates to TRUE, and print("Good student!) is executed.
+# Assign to n_smart the number of grades in my_class that are greater than or equal to 80
+n_smart <- sum(my_class >= 80)
+# Write an if-else statement
+if (n_smart > 50) {
+  print("smart class")
+} else {
+  print("rather average")
+}
+
+# else if ####
+
+# Assign prop_less the proportion of students whose grade - stored in my_class - was lower than yours
+prop_less <- mean(my_class < me)
+# Customize further the if-self constructs with else if statement 
+if (prop_less > 0.9) {
+  print("you're among the best 10 percent")
+} else if (prop_less > 0.8) {
+  print("you're among the best 20 percent")
+} else {
+  print("need more analysis")
+}
+# Imbedded if-else clauses
+if (mean(my_class) < 75) {
+  if (mean(my_class) > me) {
+    print("average year, but still smarter than me")
+  } else {
+    print("average year, but I'm not that bad")
+  } 
+} else {
+  if (mean(my_class) > me) {
+    print("smart year, even smarter than me")
+  } else {
+    print("smart year, but I am smarter")
+  }
+}
+# See whether there were more high achievers than low achievers in your class
+top_grades <- my_class[my_class >= 85]
+worst_grades <- my_class[my_class < 65]
+if (sum(top_grades) > sum(worst_grades)){
+  print("top grades prevail")
+}
