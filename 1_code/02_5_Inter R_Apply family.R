@@ -71,3 +71,39 @@ select_el <- function(x, index) {
 # Use lapply() with additional arguments
 names <- lapply(split_low, select_el, index = 1)
 years <- lapply(split_low, select_el, index = 2)
+
+# 5.2 The Sapply ####
+
+# Using the cities example again, lapply() returns a list, although the result could fit nicely into a vector. There's an easier way to tackle the case in which all the results have the same type by using sapply()
+sapply(cities, nchar) # short for "simplified apply"
+# Under the hood, something more complex is going on:
+# sapply calls lappy to apply the nchar function over each element of the cities vector.
+# Then it uses the simplify2array function to convert that list lapply generated to an array.
+# The sapply in the this case converts the result to a one dimensional array, which is a vector. 
+
+# Sapply even found a sensible way of naming this vector. This argument could be turned off
+sapply(cities, nchar, USE.NAMES = FALSE) # TRUE by default.
+
+# What happens if the function you want to apply over the input, each time returns a vector containing two values instead of one?
+first_and_last <- function(name) {
+  name <- gsub(" ", "", name)
+  letters <- strsplit(name, split = "")[[1]]
+  c(first = min(letters), last = max(letters))
+} # the written function splits up a string to its letters, and returns the minimum and maximum letter according to the alphabetial order.
+first_and_last("New York")
+# Use this function for every city name in cities
+sapply(cities, first_and_last) # the result is now a matrix.
+
+# What if this simplification is not possible?
+# There are cases in which the function does not always return a vector of the same length at all times. For this case, simplification to a vector or a matrix just doesn't make sense.
+# Write a function that returns a vector of all the letters that are used inside a character string
+unique_letters <- function(name) {
+name <- gsub(" ", "", name)
+letters <- strsplit(name, split = "")[[1]]
+unique(letters)
+} 
+unique_letters("London") #  returns a vector containing the unique letters in "London".
+# First see how  the cities behave on your function
+lapply(cities, unique_letters) # returns a list of vectors with different length.
+# Trying to simplify this list could lead to strange result
+sapply(cities, unique_letters) # also returns a list because R couldn't think of a meaningful way of symplifying the  
