@@ -98,12 +98,50 @@ sapply(cities, first_and_last) # the result is now a matrix.
 # There are cases in which the function does not always return a vector of the same length at all times. For this case, simplification to a vector or a matrix just doesn't make sense.
 # Write a function that returns a vector of all the letters that are used inside a character string
 unique_letters <- function(name) {
-name <- gsub(" ", "", name)
-letters <- strsplit(name, split = "")[[1]]
-unique(letters)
+  name <- gsub(" ", "", name)
+  letters <- strsplit(name, split = "")[[1]]
+  unique(letters)
 } 
 unique_letters("London") #  returns a vector containing the unique letters in "London".
 # First see how  the cities behave on your function
 lapply(cities, unique_letters) # returns a list of vectors with different length.
 # Trying to simplify this list could lead to strange result
-sapply(cities, unique_letters) # also returns a list because R couldn't think of a meaningful way of symplifying the  
+sapply(cities, unique_letters) # also returns a list because R couldn't think of a meaningful way of symplifying the 
+
+# Create a list that contains the temperature measurements for 7 days
+temp <- list(c(3, 7, 9, 6, -1), c(6, 9, 12, 13, 5), c(4, 8, 3, -1, -3), c(1, 4, 7, 2, -2), c(5, 7, 9, 4, 2), c(-3, 5, 8, 9, 4), c(3, 6, 9,  4, 1)) #temp is a list of length 7, while each element is a vector of length 5.
+# Use lapply() to find each day's minimum temperature
+lapply(temp, min) # return a list of length 7
+# Use sapply() instead
+sapply(temp, min) # returns a vector of length 7.
+# Similary, find out each day's maximum temperature
+sapply(temp, max)
+
+# Create a function to calculate the average of the minimum and the maximum temperatures of the vector
+extremes_avg <- function(x) {
+  (min(x) + max(x)) / 2
+}
+# Apply extremes_avg() over temp using sapply()
+sapply(temp, extremes_avg)
+# Create a function that returns min and max of a vector 
+extremes <- function(x) {
+  c(min = min(x), max = max(x))
+}
+# Apply extreme() over temp using sapply()
+sapply(temp, extremes)
+
+# In some cases, sapply() can't simplify the output and will return a list like lapply()
+below_zero <- function(x){
+  return(x[x < 0])
+}
+freezing_s <- sapply(temp, below_zero)
+freezing_l <- lapply(temp, below_zero)
+# Use identical() function to compare freezing_s and freezing_l
+identical(freezing_s, freezing_l) # TRUE
+
+# Sapply with functions that return NULL ====
+# Create a function print_info() that takes a vector and prints the average of this vector
+print_info <- function(x) {
+  cat("The average temperature is", mean(x), "\n")
+} # cat() is simlar like print() but less conversion, and cat() returns invisibly NULL.
+sapply(temp, print_info)
