@@ -139,9 +139,33 @@ freezing_l <- lapply(temp, below_zero)
 # Use identical() function to compare freezing_s and freezing_l
 identical(freezing_s, freezing_l) # TRUE
 
-# Sapply with functions that return NULL ====
+# Sapply with functions that return NULL
 # Create a function print_info() that takes a vector and prints the average of this vector
 print_info <- function(x) {
   cat("The average temperature is", mean(x), "\n")
 } # cat() is simlar like print() but less conversion, and cat() returns invisibly NULL.
 sapply(temp, print_info)
+
+# 5.3 The Vapply ####
+
+# Vapply is similar to sapply. It also uses the lapply and then tries to simplify the result. However, when using vapply, we have to explicitly say what the type of the return value will be. In sapply, this is not required nor possible. 
+# Syntax: vapply(x, FUN, FUN.VALUE,..., USE.NAME = TRUE) # the syntax is similar to sapply's, but the FUN.VALUE is new. This argument should be a general template for the return value of FUN, the function that you want to apply over the input X.
+# Call the vapply on the cities example 
+vapply(cities, nchar, numeric(1)) # numeric(1) tells the vapply() that nchar() should return a single numerical value.
+# The result is exactly the same as using sapply(). However, the pre-specification of FUN's return value makes vapply a safer alternative to sapply.
+
+# Reuse the written function first_and_last() with vapply
+vapply(cities, first_and_last, character(2)) # return the same result as sapply.
+vapply(cities, first_and_last, character(1)) # error, as the output of first_and_last() is not expected.
+vapply(cities, first_and_last, numeric(2)) # also an error.
+
+# Call the written unique_letters() and apply it over the cities vector using vapply
+vapply(cities, unique_letters, character(5)) # error, because unique_letters() returns the result with different length.
+# The little extra work in defining the FUN.VALUES arguments has the benifits that you really have to think about what your function will return without blindly assuming that the sapply() with handle every case for you.
+
+# Use the temp example again with a new defined function
+basics <- function(x) {
+  c(min = min(x), mean = mean(x), max = max(x))
+}
+vapply(temp, basics, numeric(3))
+vapply(temp, function(x, y) {mean(x) >y}, y = 5, logical(1))
