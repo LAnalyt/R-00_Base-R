@@ -23,12 +23,21 @@ Notes and exercises from R courses in Datacamp
 
 2.3 Functions
 
+2.4 Packages
+
 2.4 The apply family
 
 2.5 Utilities
 
+3. WRITING EFFICIENT R CODES
 
+3.1 The art of Benchmarking
 
+3.2 Fine Tuning: Efficient Base R
+
+3.3 Diagnosing Problems: Code Profiling
+
+3.4 Turbo Charged Code: Paralell Programming
 
 
 
