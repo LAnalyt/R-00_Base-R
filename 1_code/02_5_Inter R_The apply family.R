@@ -79,7 +79,7 @@ sapply(cities, nchar) # short for "simplified apply"
 # Under the hood, something more complex is going on:
 # sapply calls lappy to apply the nchar function over each element of the cities vector.
 # Then it uses the simplify2array function to convert that list lapply generated to an array.
-# The sapply in the this case converts the result to a one dimensional array, which is a vector. 
+# The sapply in this case converts the result to a one dimensional array, which is a vector. 
 
 # Sapply even found a sensible way of naming this vector. This argument could be turned off
 sapply(cities, nchar, USE.NAMES = FALSE) # TRUE by default.

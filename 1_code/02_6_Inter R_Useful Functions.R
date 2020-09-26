@@ -112,7 +112,7 @@ grepl(pattern = "@.*\\.edu$", x = emails)
 hits <- grep(pattern = "@.*\\.edu$", x = emails)
 emails[hits]
 # Metacharacters used in regular expressions:
-# @, because a valid email must contain an at-sign.
+# @, because a valid email must contain an @ sign.
 # .*, which matches any character (.) zero or more times (*).
 # \\.edu$, to match the ".edu" part of the email at the end of the string. The \\ part escapes the dot: it tells R that you want to use the . as an actual character.
 
