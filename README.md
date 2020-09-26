@@ -25,9 +25,11 @@ Notes and exercises from R courses in Datacamp
 
 2.4 Packages
 
-2.4 The apply family
+2.5 The apply family
 
-2.5 Utilities
+2.6 Utilities
+
+2.7 Dates & Time
 
 3. WRITING EFFICIENT R CODES
 
