@@ -1,9 +1,9 @@
 ---
-title: "1. INTRODUCTION TO R BASICS"
+title: "INTRODUCTION TO R: TRUE BASICS"
 source: DataCamp
 ---
 
-#### 1.1 Arithmetic with R
+### 1.1 Arithmetic with R
 
 In its most basic form, R can be used as a simple calculator.        
 
@@ -22,7 +22,8 @@ In its most basic form, R can be used as a simple calculator.
 28 %% 6 
 ```
 
-#### 2.2 Variable assignment
+
+### 2.2 Variable assignment
 
 A *variable* stores a value or an *object*. You can then later use this variable's name to easily access the value or the object that is stored within this variable.
 
@@ -54,11 +55,12 @@ my_fruit <- my_apples + my_oranges
 my_fruit
 ```
 
+
 ### 3.3 Basic data types in R
 
-* Decimal values like 4.5 are called *numerics*.
-* Natural numbers like 4 are called *integers*. Integers are also numerics.
-* Boolean values  (TRUE or FALSE) are called *logical*. 
+* Decimal values like `4.5` are called *numerics*.
+* Natural numbers like `4` are called *integers*. Integers are also numerics.
+* Boolean values  (`TRUE` or `FALSE`) are called *logical*. 
 * Text or string values are called *characters*.
 
 Assign different values to different types of data:
@@ -69,10 +71,44 @@ my_character <- "universe"
 my_logical <- FALSE
 ```
 
-Check the data type of a variable with `class()` function:
+Use the `class()` function to reveal the data type of a variable.
 
 ```{r}
 class(my_numeric)
 class(my_character)
 class(my_logical)
+```
+
+Instead of using `class()` you could ask R if the variable is of a certain type.
+
+```{r}
+is.numeric(2)
+is.numeric(2L)
+is.integer(2)
+is.integer(2L) # interger is numeric, but numeric is not always interger.
+```
+
+Other atomic data types:
+
+-    *double*: higher precision numeric
+
+-    *complex*: complex numbers 
+
+-    *raw*: store raw bytes.
+
+### Coercion
+
+There are occasions when you have to change form one type of data to another. This data transformation is called *coercion*. 
+
+```{r}
+as.numeric(TRUE)
+as.numeric("4")
+as.character(4)
+as.numeric("4.5")
+```
+Coercion is not always possible, or leads to missing values due to incompatible data types.
+
+```{r}
+as.integer(4.5) # return the simplest form of the data.
+as.numeric("Hello")
 ```
