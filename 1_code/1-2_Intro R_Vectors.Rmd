@@ -1,6 +1,6 @@
 ---
 title: "INTRODUCTION TO R: VECTORS"
-Source: DataCamp
+source: DataCamp
 ---
 
 *Vectors* are one-dimension *arrays* that can hold numeric data, character data, or logical data.
