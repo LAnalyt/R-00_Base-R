@@ -4,8 +4,7 @@
 
 # Create a list: list()
 # Display a variable: print()
-# Blac-
-# Call sd() function for standard deviation
+# Call sd() function for standard deviation:
 sd(c(1, 5, 6, 7))  # specify function arguments inside () 
 # Assign the input vector to a variable, then call sd() function
 values <- c(1, 5, 6, 7)
