@@ -1,4 +1,4 @@
-#1. R BASICS ####
+# 1. R BASICS ####
 
 ## 1.1 Basic arithmethic ====
 # R uses +, -, * like a calculator.
