@@ -1,53 +1,64 @@
 # INTRO TO BASICS
 
-# 1.1 Arithmetic with R####
+# 1.1 Arithmetic with R ####
 
-# In its most basic form, R can be used as a simple calculator
-#Addition: +
+# In its most basic form, R can be used as a simple calculator.
+# Addition: +
 5 + 5 
-#Subtraction: -
+# Subtraction: -
 5 - 5 
-#Multiplication: *
+# Multiplication: *
 3 * 5 
-#Division: /
-(5+5)/2 
-#Exponentiation: ^ (raise the power)
-2^5 
-#Modulo: %% (returns the remainder of the division)
-28%%6 
+# Division: /
+(5 + 5) / 2 
+# Exponentiation: ^ (raise the power)
+2 ^ 5 
+# Modulo: %% (returns the remainder of the division)
+28 %% 6 
 
-#2.2 Variable assignment####
+# 1.2 Variable assignment ####
 
-#A variable stores a value or an object (e.g. a function description). 
-#You can then later use this variable's name to easily access the value or the object that is stored within this variable.
-# Assign the value 23 to my_var
+# A variable stores a value or an object (e.g. a function description). 
+# You can then later use this variable's name to easily access the value or the object that is stored within this variable.
+# Assign the value 23 to my_var:
 my_var <- 23
-# Print out the value of my_var
+# Print out the value of my_var:
 my_var 
-# Suppose you have a fruit basket. Store the number of apples in a variable
+# Suppose you have a fruit basket. Store the number of apples in a variable:
 my_apples <- 5
-# Add 6 oranges into the basket and store the new variable 
+# Add 6 oranges into the basket and store the new variable: 
 my_oranges <- 6
-# Calculate how many pieces of fruits in total
+# Calculate how many pieces of fruits in total:
 my_apples + my_oranges
-# Assign the result to a new variable my_fruit
+# Assign the result to a new variable my_fruit:
 my_fruit <- my_apples + my_oranges
-# See how many pieces of fruits in total
+# See how many pieces of fruits in total:
 my_fruit
 
-# 3.3 Basic data types in R ####
+# 1.3 Basic data types in R ####
 
-# Decimal values like 4.5 are called numerics
+# Decimal values like 4.5 are called numerics.
 # Natural numbers like 4 are called integers. Integers are also numerics.
-# Boolean values  (TRUE or FALSE) are called logical 
-# Text or string values are called characters
-# E.g, change my_numeric to be 42
+# Boolean values  (TRUE or FALSE) are called logical. 
+# Text or string values are called characters.
+# E.g, change my_numeric to be 42:
 my_numeric <- 42
-# Change my_character to be "universe"
+# Change my_character to be "universe":
 my_character <- "universe"
-# Change my_logical to be "FALSE"
+# Change my_logical to be "FALSE":
 my_logical <- FALSE
-# Check the data type of a variable with class function
+# Check the data type of a variable with class function:
 class(my_numeric)
 class(my_character)
 class(my_logical)
+
+# 1.4 Coercion ####
+
+# There are occasions when you have to change form one type of data to another. This data transformation is called coercion. 
+as.numeric(TRUE)
+as.numeric("4")
+as.character(4)
+as.numeric("4.5")
+# Coercion is not always possible, or leads to missing values due to incompatible data types.
+as.integer(4.5) # return the simplest form of the data.
+as.numeric("Hello")
