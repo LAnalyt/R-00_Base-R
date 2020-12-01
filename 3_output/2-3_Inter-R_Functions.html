@@ -422,7 +422,7 @@ summary {
 </ul>
 <pre class="r"><code>sd(c(1, 5, 6, 7))  </code></pre>
 <pre><code>## [1] 2.629956</code></pre>
-<p>Specify function arguments inside <code>()</code></p>
+<p>Specify function arguments inside <code>()</code>.</p>
 <p>Assign the input vector to a variable, then call <code>sd()</code> function:</p>
 <pre class="r"><code>values &lt;- c(1, 5, 6, 7)
 sd(values)   </code></pre>
@@ -432,8 +432,8 @@ sd(values)   </code></pre>
 <ul>
 <li>Function documentation: <code>help(sd)</code> or <code>?sd</code> (look up in the function documentation for more info).</li>
 </ul>
-<p>The syntax of <code>sd()</code> could be found in the help page. <code>sd(x, na.rm = FALSE)</code><br />
-R matches the values to the <code>x</code> argument by position or by name:<code>sd(x = values)</code></p>
+<p>The syntax of <code>sd()</code> could be found in the help page: <code>sd(x, na.rm = FALSE)</code><br />
+R matches the values to the <code>x</code> argument by position or by name: <code>sd(x = values)</code></p>
 <ul>
 <li><code>na.rm</code> argument is a logical value indicating whether or not missing values should be removed.</li>
 </ul>
@@ -475,7 +475,7 @@ facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)</code></pre>
 <p>Suppose there’re missing values in the view record:</p>
 <pre class="r"><code>linkedin &lt;- c(16, 9, 13, 5, NA, 17, 14)
 facebook &lt;- c(17, NA, 5, 16, 8, 13, 14)</code></pre>
-<p>To calculate the average view using <code>mean()</code>, set <code>na.rm()=TRUE</code>:</p>
+<p>To calculate the average view using <code>mean()</code>, set <code>na.rm() = TRUE</code>:</p>
 <pre class="r"><code>mean(linkedin, na.rm = TRUE)</code></pre>
 <pre><code>## [1] 12.33333</code></pre>
 <p>Calculate the mean absolute function:</p>
@@ -486,9 +486,9 @@ facebook &lt;- c(17, NA, 5, 16, 8, 13, 14)</code></pre>
 <h3>3.2 Writing functions</h3>
 <p>A <em>function</em> typically serves a particular need or solves a particular problem, without having to care about how the function does this. R allows to write your own function and use it as a standard function like <code>sd()</code>, <code>mean()</code>…</p>
 <p>The syntax for writing a funtion:<br />
-<code>my_func &lt;- function(arg1, arg2) {</code> # create a new function.<br />
-<code>body</code> # create a function that takes arguments arg1 and arg2<br />
-<code>}</code> # performs the code in the body on these arguments.</p>
+<code>my_func &lt;- function(arg1, arg2) {</code> (create a new function)<br />
+<code>body</code> (create a function that takes arguments arg1 and arg2)<br />
+<code>}</code> (performs the code in the body on these arguments).</p>
 <p>Define a function that calculates the triple of its input, called <code>triple</code>:</p>
 <pre class="r"><code>triple &lt;- function(x) { # x represents input as a number
   3*x                   # calculates the triple of x.
@@ -526,7 +526,7 @@ a &lt;- increment(count, 2)
 b &lt;- increment(count)
 count &lt;- increment(count, 2)</code></pre>
 <p>R passes arguments by <em>value</em> and not by <em>reference</em>, the value of count is not changed after the first two calls of <code>increment()</code>. Only in the final expression, where count is re-assigned explicitly, does the value of <code>count</code> change.</p>
-<p>Write a function called <code>math_magic()</code> that takes 2 numbers as input and calculates the sum of the product and the division of both numbers:</p>
+<p>Write a function called <code>math_magic()</code> that takes two numbers as input and calculates the sum of the product and the division of both numbers:</p>
 <pre class="r"><code>math_magic &lt;- function(a, b) {
   a*b + a/b
 }</code></pre>
@@ -554,7 +554,7 @@ count &lt;- increment(count, 2)</code></pre>
 <p>Recall the function again:</p>
 <pre class="r"><code>math_magic(4,0) # return statement can halt the execution anytime.</code></pre>
 <pre><code>## [1] 0</code></pre>
-<p>Create a function that takes 2 arguments and returns the sum of the absolute values of both arguments:</p>
+<p>Create a function that takes two arguments and returns the sum of the absolute values of both arguments:</p>
 <pre class="r"><code>sum_abs &lt;- function(a, b){
   abs(a) + abs(b)
 }
@@ -566,7 +566,7 @@ sum_abs(-2, 3)</code></pre>
   number
 }
 throw_die()</code></pre>
-<pre><code>## [1] 2</code></pre>
+<pre><code>## [1] 6</code></pre>
 <p>Define a function without argument that prints out “Hi there!” and returns <code>TRUE</code>:</p>
 <pre class="r"><code>hello &lt;- function(){
   print(&quot;Hi there!&quot;)

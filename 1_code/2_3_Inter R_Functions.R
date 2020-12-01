@@ -21,7 +21,7 @@ sd(x, na.rm = FALSE)
 sd(x = values)
 # na.rm argument is a logical value indicating whether or not missing values should be removed. 
 values <- c(1, 5, 6, 7, NA)
-sd(values) # NA.
+sd(values)
 # set na.rm argument to TRUE.
 sd(values, TRUE) # or matching by name.
 sd(values, na.rm = TRUE)
@@ -180,7 +180,7 @@ interpret_all(facebook)
 # 3.3 Anonymous functions ####
 
 # Functions in R are objects in their own right. This means that they aren't automatically bound to a name. When you create a function, you can use the assignment operator to give the function a name. It's perfectly possible, however, to not give the function a name. This is called an anonymous function:
-# Named function
+# Named function:
 triple <- function(x) { 3 * x }
 # Anonymous function with same implementation:
 function(x) { 3 * x }
