@@ -4,7 +4,7 @@
 
 # 4.1 Install packages ####
 
-# Base R package is automatically installed and loaded. The package for data visualization, e.g, has to be installed and loaded manually
+# Base R package is automatically installed and loaded. The package for data visualization, e.g, has to be installed and loaded manually.
 install.packages("ggvis") # this function goes to CRAN, download and install the package in your system.
 
 # 4.2 Load packages ####
@@ -24,7 +24,7 @@ ggvis(mtcars, ~wt, ~hp) # print out a graph.
 # Another way to load packages is to use require() function for loading packages that are not yet installed.
 require("data.table") # return a warning if attaching package fails.
 # Check if the package is already attached:
-(result <- require("data.table")) # TRUE/FALSE
+(result <- require("data.table")) 
 # This is a good alternative to avoid errors when attaching dynamically packages inside functions.
 
 # Load ggplot2 package:
