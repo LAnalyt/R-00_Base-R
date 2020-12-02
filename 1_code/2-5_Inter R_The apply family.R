@@ -1,13 +1,13 @@
 # 5. THE APPLY FAMILY
 
-# 5.1 The Lapply ####
+# 5.1 The lapply ####
 
-# When using R, you will encounter vectors and lists containing all sorts of information. We could use for loop to iterate over all kinds of data structures. But there's even an easier way with lapply.
+# When using R, you will encounter vectors and lists containing all sorts of information. We could use the for loop to iterate over all kinds of data structures. But there's an easier way with lapply.
 # Reconstruct again the previous list example:
 nyc <- list(pop = 8405837, 
             boroughs = c("Manhatten", "Bronx", "Brooklyn", "Queens",                          "Staten Islands"), 
             capital = FALSE)
-# Suppose you want to find out the class of each element in this list.
+# Suppose you want to find out the class of each element in this list:
 for(info in nyc) {
   print(class(info))
 }
@@ -16,9 +16,9 @@ lapply(nyc, class)
 
 # Another example with city names:
 cities <- c("New York", "Paris", "London", "Tokyo", "Rio de Janiero", "Cape Town")
-# Suppose we want to build a vector of the same length, containing the number of characters of each city name.
+# Suppose we want to build a vector of the same length, containing the number of characters of each city name:
 num_chars <- c() # create an empty vector
-for(i in 1:length(cities)) { # using loop index
+for(i in 1:length(cities)) { # using loop index.
   num_chars[i] <- nchar(cities[i]) # use nchar() function.
 }
 num_chars # we got the result, but it's a lot of code.
@@ -43,13 +43,13 @@ multiply <- function(x, factor) { # use an additional argument.
 lapply(oil_prices, multiply, factor = 4)
 
 # To put it generally, lapply takes a vector or a list x, and applies a specified function to its members. If the function requires additional arguments, it could be passed inside the lapply() function. 
-lapply(x, FUNC, ...) # syntax lapply
-# The output of lapply() is a list, where each element is the result of appply FUNC on the corresponding element of x.
+lapply(x, FUN, ...) # syntax lapply.
+# The output of lapply() is a list, where each element is the result of apply FUN on the corresponding element of x.
 
 # Create a vector or famous mathematicians/statisticians and the year they were born:
 pioneers <- c("GAUSS:1777", "BAYES:1702", "PASCAL:1623", "PEARSON:1857")
-# Split names from birth year using strplit() fucntion:
-split_math <- strsplit(pioneers, split = ":") # split the strings on the : sign.
+# Split names from birth year using strplit() function:
+split_math <- strsplit(pioneers, split = ":") # split the strings on the ":" sign.
 # Convert to lowercase strings using tolower() function:
 split_low <- lapply(split_math, tolower) 
 # Inspect the contents of split_low:
@@ -74,8 +74,8 @@ years <- lapply(split_low, select_el, index = 2)
 
 # 5.2 The sapply ####
 
-# Using the cities example again, lapply() returns a list, although the result could fit nicely into a vector. There's an easier way to tackle the case in which all the results have the same type by using sapply().
-sapply(cities, nchar) # short for "simplified apply".
+# Using the cities example again, lapply() returns a list, although the result could fit nicely into a vector. There's an easier way to tackle the case in which all the results have the same type by using sapply(), short for "simplified apply".
+sapply(cities, nchar)
 # Under the hood, something more complex is going on:
 # sapply calls lappy to apply the nchar function over each element of the cities vector.
 # Then it uses the simplify2array function to convert that list lapply generated to an array.
@@ -89,7 +89,7 @@ first_and_last <- function(name) {
   name <- gsub(" ", " ", name)
   letters <- strsplit(name, split = "")[[1]]
   c(first = min(letters), last = max(letters))
-} # the written function splits up a string to its letters, and returns the minimum and maximum letter according to the alphabetial order.
+} # the written function splits up a string to its letters, and returns the minimum and maximum letter according to the alphabetical order.
 first_and_last("New York")
 # Use this function for every city name in cities
 sapply(cities, first_and_last) # the result is now a matrix.
@@ -106,15 +106,15 @@ unique_letters("London") #  returns a vector containing the unique letters in "L
 # First see how  the cities behave on your function
 lapply(cities, unique_letters) # returns a list of vectors with different length.
 # Trying to simplify this list could lead to strange result.
-sapply(cities, unique_letters) # also returns a list because R couldn't think of a meaningful way of symplifying the result.
+sapply(cities, unique_letters) # also returns a list because R couldn't think of a meaningful way of simplifying the result.
 
 # Create a list that contains the temperature measurements for 7 days:
-temp <- list(c(3, 7, 9, 6, -1), c(6, 9, 12, 13, 5), c(4, 8, 3, -1, -3), c(1, 4, 7, 2, -2), c(5, 7, 9, 4, 2), c(-3, 5, 8, 9, 4), c(3, 6, 9,  4, 1)) #temp is a list of length 7, while each element is a vector of length 5.
+temp <- list(c(3, 7, 9, 6, -1), c(6, 9, 12, 13, 5), c(4, 8, 3, -1, -3), c(1, 4, 7, 2, -2), c(5, 7, 9, 4, 2), c(-3, 5, 8, 9, 4), c(3, 6, 9,  4, 1)) # temp is a list of length 7, while each element is a vector of length 5.
 # Use lapply() to find each day's minimum temperature:
-lapply(temp, min) # return a list of length 7
+lapply(temp, min) # return a list of length 7.
 # Use sapply() instead:
 sapply(temp, min) # returns a vector of length 7.
-# Similary, find out each day's maximum temperature:
+# Similarly, find out each day's maximum temperature:
 sapply(temp, max)
 
 # Create a function to calculate the average of the minimum and the maximum temperatures of the vector:
@@ -139,18 +139,19 @@ freezing_l <- lapply(temp, below_zero)
 # Use identical() function to compare freezing_s and freezing_l:
 identical(freezing_s, freezing_l) 
 
-# Sapply with functions that return NULL:
+# sapply() with functions that return NULL:
 # Create a function print_info() that takes a vector and prints the average of this vector:
 print_info <- function(x) {
   cat("The average temperature is", mean(x), "\n")
-} # cat() is simlar like print() but less conversion, and cat() returns invisibly NULL.
+} # cat() is similar like print() but less conversion, and cat() returns invisibly NULL.
 sapply(temp, print_info)
 
-# 5.3 The Vapply ####
+# 5.3 The vapply ####
 
-# Vapply is similar to sapply. It also uses the lapply and then tries to simplify the result. However, when using vapply, we have to explicitly say what the type of the return value will be. In sapply, this is not required nor possible. 
-# Syntax: vapply(x, FUN, FUN.VALUE,..., USE.NAME = TRUE) # the syntax is similar to sapply's, but the FUN.VALUE is new. This argument should be a general template for the return value of FUN, the function that you want to apply over the input X.
-# Call the vapply on the cities example 
+# vapply is similar to sapply. It also uses the lapply and then tries to simplify the result. However, when using vapply, we have to explicitly say what the type of the return value will be. In sapply, this is not required nor possible. 
+# Syntax: vapply(x, FUN, FUN.VALUE,..., USE.NAME = TRUE) 
+# The syntax is similar to sapply's, but the FUN.VALUE is new. This argument should be a general template for the return value of FUN, the function that you want to apply over the input X.
+# Call the vapply on the cities example: 
 vapply(cities, nchar, numeric(1)) # numeric(1) tells the vapply() that nchar() should return a single numerical value.
 # The result is exactly the same as using sapply(). However, the pre-specification of FUN's return value makes vapply a safer alternative to sapply.
 
@@ -161,7 +162,7 @@ vapply(cities, first_and_last, numeric(2)) # also an error.
 
 # Call the written unique_letters() and apply it over the cities vector using vapply:
 vapply(cities, unique_letters, character(5)) # error, because unique_letters() returns the result with different length.
-# The little extra work in defining the FUN.VALUES arguments has the benefits that you really have to think about what your function will return without blindly assuming that the sapply() with handle every case for you.
+# The little extra work in defining the FUN.VALUES arguments has the benefits that you really have to think about what your function will return without blindly assuming that the sapply() will handle every case for you.
 
 # Use the temp example again with a new defined function:
 basics <- function(x) {
