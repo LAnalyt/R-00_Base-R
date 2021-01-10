@@ -31,15 +31,19 @@
 
 -    *2.7 Dates & Time*
 
-**3. WRITING EFFICIENT R CODES**
+**3. IMPORTING DATA**
 
--    *3.1 The art of Benchmarking*
+**4. CLEANING DATA**
 
--    *3.2 Fine Tuning: Efficient Base R*
+**5. WRITING EFFICIENT R CODES**
 
--    *3.3 Diagnosing Problems: Code Profiling*
+-    *5.1 The art of Benchmarking*
 
--    *3.4 Turbo Charged Code: Paralell Programming*
+-    *5.2 Fine Tuning: Efficient Base R*
+
+-    *5.3 Diagnosing Problems: Code Profiling*
+
+-    *5.4 Turbo Charged Code: Paralell Programming*
 
 
 
