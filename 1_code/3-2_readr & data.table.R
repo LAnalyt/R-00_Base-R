@@ -23,3 +23,14 @@ head(potatoes)
 # 2.2 read_delim ####
 # Use the low-level read_delim from readr to read the txt files with values using "/" as separators: 
 read_delim("states2.txt", delim = "/") # header = TRUE by default.
+# "delim" argument specifies the character that is used to separate fields within a record. It is equivalent to the "sep" argument in read.table().
+# col_names = TRUE by default, that takes the first record as the column names. Setting col_names = FALSE leads to automatic generation of column names.
+read_delim("states3.txt", delim ="/", 
+           col_names = FALSE)
+# Manually set col_names to a character vector:
+read_delim("states3.txt", delim = "/",
+           col_names = c("state", "city", "pop", "area"))
+# col_types controls the column classes.
+read_delim("states2.txt", delim = "/",
+           col_types = "ccdd") # c: character, d: double.
+# skip and n_max: 
