@@ -63,5 +63,3 @@ urban <- cbind(urban_sheet1,
 urban_clean <- na.omit(urban)
 # Print out a summary of urban_clean:
 summary(urban_clean)
-
-# 3.3 XLConnect ####
