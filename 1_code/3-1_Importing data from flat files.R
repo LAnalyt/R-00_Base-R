@@ -72,3 +72,7 @@ read.csv2("states_nay.csv")
 # read.delim2() has a default argument to convert the European decimal system with "," into the US "."
 read.delim("states_aye.txt")
 read.delim2("states_aye.txt")
+
+# 1.5 scan ####
+# when reading in spreadsheets many things can go wrong. The file might have a multiline header, be missing cells, or it might use an unexpected encoding. Scan() helps you read-in each cell of a file.
+scan("states.csv", sep = ",", what = "c")
