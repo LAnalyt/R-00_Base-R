@@ -33,6 +33,18 @@
 
 **3. IMPORTING DATA**
 
+-    *3.1 Importing data from flat files*
+
+-    *3.2 Readr and data.table*
+
+-    *3.3 Importing data from Excel*
+
+-    *3.4 Importing relational data from databases*
+
+-    *3.5 Importing data from web*
+
+-    *3.6 Importing data from statistical software packages*
+
 **4. CLEANING DATA**
 
 **5. WRITING EFFICIENT R CODES**
