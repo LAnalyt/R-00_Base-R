@@ -3,7 +3,7 @@
 # 4.1 Relational databases ####
 # Many companies store their information in relational databases. The information is stored in separate tables whose identifier can be connected to each other through a database management system (DBMS). # Open-source DBMS: MySQL, postgreSQL, SQLite...
 # Proprietary DBMS: Oracle Database, Microsoft SQL Server
-# Practically all DBMS use SQL language for querying and maintaing database. Depending on the type of database you want to connect to, you will have to use different packages.
+# Practically all DBMS use SQL language for querying and maintaining database. Depending on the type of database you want to connect to, you will have to use different packages.
 install.packages("RMySQL") # for MySQL database.
 # RMySQL includes automatically the DBI package which contains functions to access and manipulate the database.
 library(DBI)
@@ -34,6 +34,36 @@ lapply(tables, dbReadTable, conn = con)
 # The tweats table contains a column user_id. The ids in the column refer to the users that have posted the tweat. Similarly, the comments contain both a user_id and a tweat_id column. It specifies which user posted a comment on which tweat.
 
 # 4.4 SQL queries from inside R ####
+# dbReadTable() imports the entire table, which is not optimal with large database. Selective importing only imports the elements that you actually need inside R via SQL language.
+# SQL queries: retrieve data based on specific criteria. 
+dbGetQuery(con, "SELECT name FROM users WHERE id = 1")
+# The syntax is common in SQL query, with keywords: SELECT, FROM and WHERE. 
+# SELECT: specifies which column to select
+# FROM: specifies which table you want to get data
+# WHERE: specifies a condition that a record in the table has to meet. Notice in SQL language "=" replaces "=="  conditional constraint
+# Without dbGetQuerry(), we will have to load the entire dataset into R then create a subset out of it.
+users <- dbReadTable(con, "users")
+subset(users, subset = id == 1,
+       select = name) # the result is exactly the same. 
+# Apart from checking equality, you can also check for less than and greater than relationships, with < and >, just like in R.
+dbGetQuery(con, "SELECT post FROM tweats WHERE date > 2015-09-21")
+# Add more conditions with AND:
+dbGetQuery(con, "SELECT message FROM comments WHERE tweat_id = 77 AND user_id > 4")
+# Another very often used keyword is JOIN, and more specifically INNER JOIN.
+dbGetQuery(con, "SELECT post FROM tweats INNER JOIN comments on tweats.id = tweat_id WHERE tweat_id = 77")
+
+# Under the hood of dbGetQuery(), R sends a query to the database with dbSendQuery().
+names <- dbSendQuery(con, "SELECT name FROM users")
+# This function returns a result, but does not contain any records. For that we need to use dbFetch().
+dbFetch(names)
+# Clear the result manually:
+dbClearResult(names)
+# The combination of dbSendQuery, dbFetch and dbClearResult gives exactly the same result as dbGetQuery does. But dbFetch query calls allow you to specify a maximum number of records to retrieve per fetch.
+dbFetch(names, n = 2) # This is useful to load tons of records chunk by chunk.
+# Create the data frame long_tweats where the character length of the post variable exceeds 40:
+long_tweats <- dbGetQuery(con, "SELECT post, date FROM tweats WHERE length(post) > 40")
+print(long_tweats)
+
 # Finally, explicitly disconnect the database after you're done:
 dbDisconnect(con)
 con # no longer available.
