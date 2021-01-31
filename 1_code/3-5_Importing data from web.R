@@ -3,7 +3,7 @@
 # 5.1 HTTP ####
 # More and more of the information that data scientists are using resides on the web. Importing this data into R requires an understanding of the protocols used on the web. 
 # Http (HyperText Transfer Protocol) is the language of the web. It is basically a system of rules for how data should be exchanged between computers. 
-# E.g, the file states.csv is located at the link: "https://raw.githubusercontent.com/ltrangng/R_00_Base-R/master/0_data/states.csv". The typical workflow would be manually download the file through a web browser, then point to the path inside read.csv(). However, we can simply pass the url as a character string.
+# E.g, the file states.csv is located at the link: "https://raw.githubusercontent.com/ltrangng/R_00_Base-R/master/0_data/states.csv". The typical workflow would be manually download the file through a web browser, then point to the path inside read.csv(). However, we can simply pass the URL as a character string.
 read.csv("https://raw.githubusercontent.com/ltrangng/R_00_Base-R/master/0_data/states.csv")
 # R figures out that you referred to a URL, and requests it using a HTTP GET request. The server responses with the csv file. It also works with the secure https.
 read.csv("https://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/states.csv")
@@ -42,3 +42,50 @@ load("wine_local.RData")
 summary(wine)
 
 # 5.4 httr ####
+# Importing data with HTTP request from inside R may require authentication and additional parameters. The  httr package provides functions to deal with these.
+library(httr)
+# GET(): executes the GET request. The result is a response object, that provides easy access to the status code, content-type and, the actual content.
+url <- "http://www.example.com"
+resp <- GET(url)
+resp
+# content(): extract the content from the request. By default, if you don't specify the as argument, it will try to figure out what type of data you're dealing with and parses it for you.
+content(resp)
+# Get the raw content by passing the "as" argument:
+raw_content <- content(resp, as = "raw")
+head(raw_content)
+# Get the URL from a sample JSON file:
+url <- "http://www.omdbapi.com/?apikey=72bc447a&t=Annie+Hall&y=&plot=short&r=json"
+resp <- GET(url)
+resp
+# Get the content of resp and print it out as text:
+content(resp, as = "text")
+# Without the "as" argument, R identifies automatically a JSON data, and converts the JSON to a named R list.
+content(resp)
+
+# 5.5 APIs & JSON ####
+# Web content does not limit itself to HTML pages and files stored on remote servers. Another common one is JSON. This format is very often used by Web APIs (Application Programming Interface), interfaces to web servers with which a client can communicate to get or store information in more complicated ways.
+# JSON format is very simple, concise, well-structured and human-readable. It is also easy to generate and interpret for machines, which makes it perfect to communicate with Web APIs. 
+# Suppose you want to get some data on the movie "Annie Hall". 
+url <- "https://www.imdb.com/title/tt0075686/"
+download.file(url, "local_imdb.html")
+# You could download the corresponding URL of IMDb, read it in, then start programmatically search your way through the HMTL code, which is more than 4000 lines, to get the information you need. This is very slow and error-prone.
+# The OMDb API is and open movie database which can give information on movies. Simply take the URL with additional parameters like ID of the movie and what type of the response should be:
+BROWSE("http://www.omdbapi.com/?apikey=72bc447a&t=Annie+Hall&y=&plot=short&r=json")
+# To handle JSONs  we can use jsonlite package.
+library(jsonlite)
+# The fromJSON() function downloads the JSON data and converts it into a named R list.
+fromJSON("http://www.omdbapi.com/?apikey=72bc447a&t=Annie+Hall&y=&plot=short&r=json")
+# In the simplest setting, fromJSON() can convert character strings that represent JSON data into a nicely structured R list. 
+wine_json <- '{"name":"Chateau Migraine", "year":1997, "alcohol_pct":12.4, "color":"red", "awarded":false}'
+# wine_json represents a JSON. fromJSON() converts it to a list.
+wine <- fromJSON(wine_json)
+str(wine)
+# fromJSON() also works if you pass a URL as a character string or the path to a local file that contains JSON data. 
+quandl_url <- "https://www.quandl.com/api/v3/datasets/WIKI/FB/data.json?auth_token=i83asDsiWUUyfoypkgMz"
+# Import Quandl data directly from the web:
+quandl_data <- fromJSON(quandl_url)
+# Display the structure of quandl_data:
+str(quandl_data)
+         
+         
+         
