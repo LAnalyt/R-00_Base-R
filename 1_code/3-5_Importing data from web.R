@@ -118,4 +118,14 @@ fromJSON('[{"id":1,"name":"Frank"},
 # Import a csv file containing information on the amount of desalinated water that is produced around the world:
 url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/water.csv"
 water <- read.csv(url_csv)
+# Convert the data frame water to a JSON:
 water_json <- toJSON(water)
+# The result is an R object of the class json, which is basically a character string representing that JSON.
+water_json
+
+# JSONs can come in mini and pretty formats. The standard form that toJSON() returns, is the minified version, as it is more concise. However, it is not so readable to a human. prettify() changes the JSON strings into pretty format.
+prettify(water_json) # more readable.
+# This can be also adapted inside the toJSON() with "pretty" argument.
+pretty_json <- toJSON(mtcars, pretty = TRUE)
+# Convert pretty_json to a minimal version using minify():
+minify(pretty_json)
