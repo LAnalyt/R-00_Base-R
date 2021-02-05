@@ -62,7 +62,7 @@ content(resp, as = "text")
 # Without the "as" argument, R identifies automatically a JSON data, and converts the JSON to a named R list.
 content(resp)
 
-# 5.5 APIs & JSON ####
+# 5.5 JSON & JSONlite ####
 # Web content does not limit itself to HTML pages and files stored on remote servers. Another common one is JSON. This format is very often used by Web APIs (Application Programming Interface), interfaces to web servers with which a client can communicate to get or store information in more complicated ways.
 # JSON format is very simple, concise, well-structured and human-readable. It is also easy to generate and interpret for machines, which makes it perfect to communicate with Web APIs. 
 # Suppose you want to get some data on the movie "Annie Hall". 
@@ -86,6 +86,36 @@ quandl_url <- "https://www.quandl.com/api/v3/datasets/WIKI/FB/data.json?auth_tok
 quandl_data <- fromJSON(quandl_url)
 # Display the structure of quandl_data:
 str(quandl_data)
-         
-         
-         
+
+# A typical JSON object has the format of unordered collection of name/value pairs, e.g: {"id":1,"name":"Frank","age:23,"married":false}. Convert this JSON into R string:
+x <- '{"id":1,"name":"Frank","age":23,"married":false}' # single quote
+# Pass the string to fromJSON() that converts a JSON to R code.
+r <- fromJSON(x)
+str(r) # returns a list.
+
+# JSON array id an ordered sequence of zero or more values, e.g: [4, 7, 4, 6, 4, 5, 10, 6, 6, 8].
+# Calling fromJSON() on this JSON results in an integer vector.
+fromJSON('[4, 7, 4, 6, 4, 5, 10, 6, 6, 8]')
+# This is actually a simplification because JSON arrays, like JSON objects, are heterogeneous: they can contain elements of different types.
+x <- '[4,"a", 4, 6, 4,"b", 10, 6, false, null]' 
+fromJSON(x) # numbers and logical values are  coerced into characters, "null" to NA in R.
+
+# Nesting JSOn: both JSON objects and JSON array can contain other JSON objects and arrays.
+r <- fromJSON('{"id": 1,
+              "name": "Frank",
+              "age": 23,
+              "married": false, 
+              "partner": {"id": 4,
+              "name": "Julie"}}')
+str(r) # returns a nested named list.
+
+# Build an array of JSON objects:
+fromJSON('[{"id":1,"name":"Frank"},
+         {"id":4,"name":"Julie"},
+         {"id":12,"name":"Zach"}]') # returns a data frame.
+
+# toJSON():  converts R data to a JSON format.
+# Import a csv file containing information on the amount of desalinated water that is produced around the world:
+url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/water.csv"
+water <- read.csv(url_csv)
+water_json <- toJSON(water)
