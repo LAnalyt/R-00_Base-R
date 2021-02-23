@@ -60,13 +60,14 @@ str(edu_equal_3)
 # How many people have an age higher than 40 and are literate?
 nrow(subset(edu_equal_1, age > 40 & literate == "yes"))
 
-# read.spss(): reads SPSS data files. To get a data frame, make sure to set to.data.frame = TRUE inside. 
+# read.spss(): reads SPSS data files. Adding to.data.frame argument returns a data frame instead of a list. 
 demo <- read.spss("international.sav", to.data.frame = TRUE) # socio-economic variables from different countries.
 # Create boxplot of gdp variable:
 boxplot(demo$gdp)
 # Calculate the correlation between two vectors with cor():
 cor(demo$gdp, demo$f_illit) # negative correlation, but rather weak.
-# use.value.labels: specifies whether variables with value labels should be converted into R factors with levels that are named accordingly.
+# use.value.labels: converts labelled SPSS values to R factors.
 head(demo)
 demo_2 <- read.spss("international.sav", to.data.frame = TRUE, use.value.labels = FALSE)
 head(demo_2) 
+# There are many more other arguments. Foreign aims at a specific treatment of different types of data files. This does not benefit the consistency, but provides full control over how actually data files are imported.
