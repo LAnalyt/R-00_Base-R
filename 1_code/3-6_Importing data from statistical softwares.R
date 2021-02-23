@@ -39,3 +39,34 @@ summary(work$GENDER) # doesn't give a lot of useful information.
 work$GENDER <- as_factor(work$GENDER)
 # Display summary of work$GENDER again:
 summary(work$GENDER)
+
+# 6.3 foreign ####
+# foreign package is written by the R core team, which can work with all kinds of foreign data formats. It's also possible to export data again to various formats. 
+install.packages("foreign")
+library(foreign)
+# foreign cannot import single SAS data files, such as .sas7bdat files. Only SAS library in .xport format can be read. 
+# foreign package offers a simple function to import and read STATA data: read.dta()
+florida <- read.dta("florida.dta") # data on the US presidential elections in the 2000. 
+tail(florida)
+# Data can be very diverse, going from character vectors to categorical variables, dates and more. Import a dataset that contains socio-economic measures and access to education for different individuals:
+edu_equal_1 <- read.dta("edequality.dta") # already sufficient to import a dataset.
+str(edu_equal_1) # automatically creates factors from labelled STATA values.
+# Set the default argument convert.factors to FALSE:
+edu_equal_2 <- read.dta("edequality.dta", convert.factors = FALSE)
+str(edu_equal_2) # factors are converted to integers, but the information is stored in the data frame's attributes.
+# convert.underscore argument converts "_" in Stata variable names to "." in R names.
+edu_equal_3 <- read.dta("edequality.dta", convert.underscore = TRUE)
+str(edu_equal_3)
+# How many people have an age higher than 40 and are literate?
+nrow(subset(edu_equal_1, age > 40 & literate == "yes"))
+
+# read.spss(): reads SPSS data files. To get a data frame, make sure to set to.data.frame = TRUE inside. 
+demo <- read.spss("international.sav", to.data.frame = TRUE) # socio-economic variables from different countries.
+# Create boxplot of gdp variable:
+boxplot(demo$gdp)
+# Calculate the correlation between two vectors with cor():
+cor(demo$gdp, demo$f_illit) # negative correlation, but rather weak.
+# use.value.labels: specifies whether variables with value labels should be converted into R factors with levels that are named accordingly.
+head(demo)
+demo_2 <- read.spss("international.sav", to.data.frame = TRUE, use.value.labels = FALSE)
+head(demo_2) 
