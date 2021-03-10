@@ -47,6 +47,14 @@
 
 **4. CLEANING DATA**
 
+   *4.1 Common data problems*
+
+   *4.2 Categorical and Text Data*
+
+   *4.3 Advanced Data Problems*
+
+   *4.4 Record Linkage*
+    
 **5. WRITING EFFICIENT R CODES**
 
    *5.1 The art of Benchmarking*
