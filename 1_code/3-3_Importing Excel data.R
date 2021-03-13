@@ -5,8 +5,8 @@
 # 3.1 readxl ####
 # readxl of the tidyverse package makes it easy to get data out of Excel and into R. 
 library(readxl)
-# An Excel file contains different sheets that contain tabular data. Typically in R we want to explore the Excel file first and then import some data from it. excel_sheets() lists the different sheets in the Excel file.
-excel_sheets("urbanpop.xlsx") # contains urban population metrics for all countries in the world throughout time (source: Gapminder). 
+# excel_sheets(): lists the different sheets in the Excel file.
+excel_sheets("urbanpop.xlsx") # contains urban population metrics for all countries in the world throughout time. 
 # readxl is able to handle both .xls and .xlsx files. read_excel() imports the sheet data into R. By default the first sheet in the Excel file is imported as a tibble.
 read_excel("urbanpop.xlsx")
 # Explicitly tell read_excel() which sheet to import:
@@ -35,12 +35,13 @@ read_excel("urbanpop.xlsx",
           sheet = 2, 
           col_names = FALSE, 
           skip = 21)
+# n_max: specify the number of records to read. 
 
 # 3.2 gdata ####
-# gdata package is an entire suite of tools for performing data manipulation in all sorts of fields. It supercharges the basic R distribution to make handling the data less painful. Among these tools the function read.xls() allows you to import Excel data.
+# gdata package is an entire suite of tools for performing data manipulation in all sorts of fields. It supercharges the basic R distribution to make handling the data less painful. 
 install.packages("gdata")
 library(gdata)
-# gdata can only handle .xls format, but it is easy to install a driver to support the newer .xlsl format, as well.
+# Among these tools the function read.xls() allows you to import Excel data. gdata can only handle .xls format, but it is easy to install a driver to support the newer .xlsl format, as well.
 urban_pop <- read.xls("urbanpop.xls", sheet = 2)
 head(urban_pop)
 # read.xls() basically comes down to two steps: converting the Excel file to a .csv file using a Perl script, and then reading that .csv file with the read.csv() function that is loaded by default in R, through the utils package. This means that all the options that you can specify in read.csv(), can also be specified in read.xls().
@@ -49,8 +50,7 @@ urban_pop <- read.xls("urbanpop.xls", sheet = 2,
          skip = 50, header = FALSE, stringsAsFactors = TRUE,
          col.names = columns)
 head(urban_pop)
-str(urban_pop)
-# After reading Ecel data, we can try to clean and merge it. 
+# After reading Excel data, we can try to clean and merge it. 
 path <- "urbanpop.xls"
 urban_sheet1 <- read.xls(path, sheet = 1)
 urban_sheet2 <- read.xls(path, sheet = 2)
