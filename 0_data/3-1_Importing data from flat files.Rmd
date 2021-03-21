@@ -134,3 +134,153 @@ When reading in spreadsheets many things can go wrong. The file might have a mul
 ```{r}
 scan("states.csv", sep = ",", what = "c")
 ```
+
+### 1.6 readr
+In addition to base R, there are dedicated packages to easily and efficiently import flat file data. 
+**readr** package which is written by Hadley Wickham is fast and easy to use with consistent naming, while **utils** is more verbose and multiple times slower.
+```{r}
+library(readr) 
+```
+Import the *states.csv* file again with **utils** to compare the difference:
+```{r}
+read.csv("states.csv", stringsAsFactors = FALSE) # return a data frame.
+```
+Similar function like `read.csv` in **readr** is `read_csv`:
+```{r}
+read_csv("states.csv")
+```
+The result is pretty much the same. The only difference is `read_csv` ouputs a *tibble*, which is a supercharged version of data frame. The printout conveniently shows the column classes.
+
+In both calls, the first argument is the path to the file you want to import. In **readr**, strings are not imported as factors default, so an equivalent to `stringsAsFactors` argument is not required. 
+
+**utils** features the `read.delim()` to import tab-delimited files. 
+```{r}
+read.delim("states.txt", stringsAsFactors = FALSE)
+```
+**readr** also provides similar function `read_tsv` (tab separated value).
+```{r}
+read_tsv("states.txt")
+```
+Just like in **utils** package, both `read_csv` and `read_tsv` are wrappers around the mother import function `read_delim()`.
+
+<img src = "https://raw.githubusercontent.com/Lsinfos/R_00_Base-R/master/2_resources/import_wrapper.JPG" width = "450">
+
+Now working with another dataset: *potatoes.csv*. It gives information on the impact of storage period and cooking on potatoes' flavor. It uses commas to delimit fields in a record, and contains column names in the first row. Import the "potatoes.csv" data:
+```{r}
+read_csv("potatoes.csv") 
+```
+This time, the potatoes data comes in the form of a tab-separated values file: *potatoes.txt*.
+```{r}
+read_tsv("potatoes.txt")
+```
+This *.txt* file does not contain columns names in the first row. This can be specify manually.
+```{r}
+properties <- c("area", "temp", "size", "storage", "method", "texture", "flavor", "moistness")
+potatoes <- read_tsv("potatoes.txt", col_names = properties)
+head(potatoes)
+```
+
+Use the low-level `read_delim` from **readr** to read the *.txt* files with values using `/` as separators:
+```{r}
+read_delim("states2.txt", delim = "/")
+```
+`delim` argument specifies the character that is used to separate fields within a record. It is equivalent to the `sep` argument in `read.table()`. The output corresponds to the output of `read.table()` but **readr** version outputs a tibble again.
+
+We do not have to specify `header = TRUE` because by default, `read_delim()` expects the first row to contain the column names. It does this with the `col_names` argument. Setting `header = FALSE` leads to automatic generation of column names.
+
+Also, strings are not imported as factors by default, so `stringsAsFactors` equivalent is not necessary.
+```{r}
+read_delim("states3.txt", delim ="/", 
+           col_names = FALSE) # first line is a record. 
+```
+You can also manually set `col_names` to a character vector. The names you pass will be used as the names of the columns, and the first line is read as a record.
+```{r}
+read_delim("states3.txt", delim = "/",
+           col_names = c("state", "city", "pop", "area"))
+```
+`col_types` controls the column classes (similar to `colClasses` in **utils**). If `col_type` is set to `NULL`, the default, functions from **readr** will try to find the correct types themselves. You can manually set the types with a string, where each character denotes the class of the column: character, double, integer and logical. `_` skips the column as a whole.
+```{r}
+read_delim("states2.txt", delim = "/",
+           col_types = "ccdi") # c: character, d: double, i: integer.
+```
+If you are working on huge flat files, say one million lines, yo mighr be interested in handling data in chunks of 50.000 lines, for example. This keeps your work tractable and you can easily follow up the progress of your algorithms. In **readr** you can do this with the combination of `skip` and `n_max`. 
+
+`n_max` controls which part of your flat file you're actually importing into R.
+`skip`: specifies the number of lines you're ignoring in the flat file before actually starting to import data.
+```{r}
+read_delim("states2.txt", delim = "/",
+           col_names = c("state", "city", "pop", "area"),
+           skip = 2, n_max = 3)
+```
+Use `read_delim` to import *potatoes.txt* instead of `read_tsv`:
+```{r}
+read_delim("potatoes.txt", delim = "\t",
+           col_names = properties)
+```
+Import observations 7, 8, 9, 10 and 11 only:
+```{r}
+read_delim("potatoes.txt", delim = "\t",
+           skip = 6, n_max = 5,
+           col_names = properties)
+```
+You can specify which types the columns with `col_types`. If `col_type` is set to `NULL`, the default, functions from **readr** will try to find the correct types themselves. You can manually set the types with a string, where each character denotes the class of the column: character, double, integer and logical. _ skips the column as a whole.
+```{R}
+potatoes_char <- read_tsv("potatoes.txt", col_types = "cccccccc", col_names = properties)
+str(potatoes_char)
+```
+Another way of setting the types of the imported columns is using collectors. Collector functions can be passed in a `list()` to the `col_types` argument of `read_` function to tell them how to interpret values in a column.
+
+-    `col_integer()`: the column should be interpreted as an integer.
+-    `col_factor(levels, ordered = FALSE)`: the column should be interpreted as a factor with levels.
+
+Work with *hotdogs.txt* data, which is a tab-delimited file without column names in the first row.
+```{r}
+hotdogs <- read_tsv("hotdogs.txt", 
+                    col_names = c("type", "calories", "sodium"))
+summary(hotdogs)
+```
+Define collector functions:
+```{r}
+fac <- col_factor(levels = c("Beef", "Meat", "Poultry"))
+int <- col_integer()
+```
+Edit the `col_types` argument to import the data correctly:
+```{r}
+hotdogs_factor <- read_tsv("hotdogs.txt",
+                           col_names = c("type", "calories", "sodium"),
+                           col_types = list(fac, int, int))
+summary(hotdogs_factor)
+```
+
+### 1.7 data.table: fread
+The key performance metric for **data.table** package by Matt Dowle and Arun Srinvasan is speed. The package is mainly about data manipulation in R, but also features a super powerful function to read data: `fread()`. 
+```{r}
+library(data.table)
+```
+`fread()` is similar to `read.table()` but more convenient to use. Call `fread()` on *states.csv* with the first line as column names, and *states2.csv* without column names, both without additional arguments.
+```{r}
+fread("states.csv")
+```
+```{r}
+fread("states2.csv") # fread makes up some column names itself.
+```
+`fread()` automatically deals with both cases without any specific arguments. It can also infer column types and the field separators without having to specify these. You can also manually specify the separator, the `colClasses`, the number of lines to skip or to read manually. `fread` is like an improved version of `read.table` which is faster, more convenient and adds functionality.
+
+Import *potatoes.csv* with `fread()`:
+```{r}
+fread("potatoes.csv")
+```
+Import only columns 6 and 8 of *potatoes.csv*:
+```{r}
+fread("potatoes.csv", select = c(6, 8))
+```
+or using the column names:
+```{r}
+potatoes <- fread("potatoes.csv", select = c("texture", "moistness"))
+```
+Plot texture `x` and moistness `y` of potatoes:
+```{r}
+plot(potatoes$texture, potatoes$moistness)
+```
+
+The class of the result of `fread()` is both `data.table` and `data.frame`. `read_csv()` creates an object with three classes: `tbl_df`, `tbl` and `data.frame`.

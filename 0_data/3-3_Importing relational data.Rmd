@@ -1,0 +1,139 @@
+---
+title: "IMPORTING EXCEL DATA"
+source: DataCamp
+---
+
+### 3.1 Relational databases
+Many companies store their information in relational databases. Take this database called "company" for example. It contains three tables: employees, products and sales. Like a flat file, information is displayed in a table format. 
+
+-    The *employees* table has 5 records and 3 fields: *id*, *name*, and *start_at*. The *id* here serves as a unique key for each record.
+-    The *products* table contains the details on 4 products. Also here each product has an identifier.  
+-    The *sales* table lists which product was sold by whom, when, and for what price. The *id* in *employee_id* corresponds to the ids in the *employees* and *products* tables respectively.
+    
+<img src = "https://raw.githubusercontent.com/LAnalyt/R-00_Base-R/master/2_resources/import_relational%20data.JPG" width = "450">
+
+This relation makes the database very powerful. The information is stored in separate tables whose identifier can be connected to each other through a database management system (DBMS). 
+
+-    Open source DBMS: **MySQL**, **postgreSQL**, **SQLite**...
+-    Proprietary DBMS: **Oracle Database** and **Microsoft SQL Server**
+
+Practically all DBMS use *SQL* language for querying and maintaining database. Depending on the type of database you want to connect to, you will have to use different packages.
+
+-    **RMySQL** package: for **MySQL** database
+-    **RPostgresSQL** package: for **PostgresSQL** database
+-    **ROracle** package: for **Oracale** database.
+
+But before implementing these packages, we will need to install and load the **DBI** package for the interface. **DBI** specifies which R functions to access and manipulate the database.
+```{r}
+library(DBI)
+```
+
+### 3.2 Connecting to a database
+The first step is to create a connection to the remote **MySQL** database.
+```{r}
+con <- dbConnect(RMySQL::MySQL(),    # construct  SQL driver
+                 dbname = "tweater", # specify database's name
+                 host =  "courses.csrrinzqubik.us-east-1.rds.amazonaws.com",
+                 port = 3306,
+                 user = "student",   # credentials to identify    
+                 password = "datacamp") 
+```
+The first argument specifies the driver that you will use to connect to the **MySQL** database. The `MySQL()` from  **RMySQL** simply constructs a driver that `dbConnect` can use. Next, you have to specify the database name, where it is hosted, through which port you want to connect, and finally the credentials to authenticate yourself.
+The result of `dbConnect()` is a *DBIConnection* object. This object has to be passed to any function for interacting with the database.
+```{r}
+class(con)
+```
+
+### 3.3 Import table data
+After connecting successfully to a database, we want to see what is in there. The first step is listing all the tables in the database.
+```{r}
+tables <- dbListTables(con)
+tables
+```
+We get a character vector of length 3, corresponding to the table names in the database. The database contains data on a more tasty version of Twitter, namely `Tweater`. Users can post "tweats" with short recipes for delicious snacks. People can comment on these "tweats". 
+```{r}
+str(tables)
+```
+Next, you can choose to actually read the data from one of these tables with `dbReadTable()`, for example data on the users:
+```{r}
+dbReadTable(con, "users") # specify table in second argument.
+```
+The result is a data frame, with exactly the same content as the original database table. 
+Use `lapply()` to import all the tables:
+```{r}
+lapply(tables, dbReadTable, conn = con)
+```
+The "tweats" table contains a column `user_id`. The ids in the column refer to the users that have posted the tweat. Similarly, the comments contain both a `user_id` and a `tweat_id` column. It specifies which user posted a comment on which tweat.
+
+### 3.4 SQL queries from inside R
+`dbReadTable()` imports the entire table, which is not optimal with large database. Selective importing only imports the elements that you actually need inside R via SQL language.
+SQL Querries allows you to retrieve data based on specific criteria. You can send these querries through R functions specified by the **DBI** package and implemented by RMySQL in this case.
+
+<img src = "https://raw.githubusercontent.com/LAnalyt/R-00_Base-R/master/2_resources/import_dbConnect.JPG" width = "300">
+
+```{r}
+dbGetQuery(con, "SELECT name FROM users WHERE id = 1")
+```
+The syntax is common in SQL query, with keywords: `SELECT`, `FROM` and `WHERE`. 
+
+-    `SELECT`: specifies which column to select
+-    `FROM`: specifies which table you want to get data
+-    `WHERE`: specifies a condition that a record in the table has to meet. Notice in SQL language `=` replaces `==`  conditional constraint.
+Without `dbGetQuerry()`, we will have to load the entire dataset into R then create a subset out of it.
+```{r}
+users <- dbReadTable(con, "users")
+subset(users, subset = id == 1,
+       select = name)
+```
+The result is exactly the same.
+
+Apart from checking equality, you can also check for less than and greater than relationships, with `<` and `>`, just like in R.
+```{R}
+dbGetQuery(con, "SELECT post FROM tweats WHERE date > 2015-09-21")
+```
+Add more conditions with `AND`:
+```{r}
+dbGetQuery(con, "SELECT message FROM comments WHERE tweat_id = 77 AND user_id > 4")
+```
+There are also dedicated SQL functions that you can use in the WHERE clause of an SQL query. For example, `CHAR_LENGTH()` returns the number of characters in a string.
+```{r}
+dbGetQuery(con, "SELECT id, name FROM users WHERE CHAR_LENGTH(name) < 5")
+```
+Another very often used keyword is `JOIN`, and more specifically `INNER JOIN`.
+```{r}
+dbGetQuery(con, "SELECT post FROM tweats INNER JOIN comments on tweats.id = tweat_id WHERE tweat_id = 77")
+```
+Under the hood of `dbGetQuery()`, R sends a query to the database with `dbSendQuery()`.
+```{r}
+names <- dbSendQuery(con, "SELECT name FROM users")
+```
+This function returns a result, but does not contain any records. For that we need to use `dbFetch()`.
+```{r}
+dbFetch(names)
+```
+Clear the result manually:
+```{r}
+dbClearResult(names)
+```
+The combination of `dbSendQuery`, `dbFetch` and `dbClearResult` gives exactly the same result as `dbGetQuery` does. But `dbFetch` query calls allow you to specify a maximum number of records to retrieve per fetch.
+```{r}
+names <- dbSendQuery(con, "SELECT name FROM users")
+dbFetch(names, n = 2)
+```
+This is useful when you need to load tons of records, but want to do this chunk by chunk.
+Suppose you want to want to get the result of the query record by record, you can also construct a `while` loop.
+```{r}
+while(!dbHasCompleted(names)) {
+  chunk <- dbFetch(names, n = 1)
+  print(chunk)
+}
+```
+Create the data frame `long_tweats` where the character length of the post variable exceeds 40:
+```{r}
+long_tweats <- dbGetQuery(con, "SELECT post, date FROM tweats WHERE length(post) > 40")
+long_tweats
+```
+Finally, explicitly disconnect the database after you are done:
+```{R}
+dbDisconnect(con)
+```

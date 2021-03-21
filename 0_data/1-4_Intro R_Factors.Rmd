@@ -1,0 +1,80 @@
+---
+title: 'INTRODUCTION TO R: FACTORS'
+source: DataCamp
+---
+
+### 4.1 What is a factor and why we use it?
+
+*Factors* refer to a statistical data type used to store categorical values. The difference between a categorical variable and a continuous variable is that a categorical variable can belong to a limited number of categories.
+
+Create a vector that contains all the observations that belong to a limited number of categories:
+```{r}
+sex_vector <- c("Male", "Female", "Female", "Male", "Male")
+```
+There're two categories here, or the *factor levels* here are "Male" and "Female".
+```{r}
+# Convert sex_vector to a factor
+factor_sex_vector <- factor(sex_vector)
+# Print out to see the factor levels
+factor_sex_vector 
+```
+
+There are two types of categorical variables: a *nominal* categorical variable and an *ordinal* categorical variable.
+
+A *nominal* variable is a categorical variable without an implied order.
+```{r}
+animals_vector <- c("Elephant", "Giraffe", "Donkey", "Horse")
+factor_animals_vector <- factor(animals_vector)
+factor_animals_vector  
+```
+It is impossible to say that one is worth more than the other.
+
+In contrast, *ordinal* variables do have a natural ordering. 
+```{r}
+temperature <-  c("High", "Low", "High", "Low", "Medium")
+factor_temperature <- factor(temperature, ordered = TRUE, levels = c("Low", "Medium", "High"))
+factor_temperature
+```
+
+### 4.2 Factor levels
+
+Some datasets contain factors with specific factor levels. These levels can be changed with `levels()` function for clarity. For example, the sex of the correspondents in a survey were recorded in short as "F" and "M".
+```{r}
+survey_vector <- c("M", "F", "F", "M", "M")
+factor_survey_vector <- factor(survey_vector)
+# Specify the levels
+levels(factor_survey_vector) <- c("Female", "Male")
+# Print out the result
+factor_survey_vector
+```
+
+### 4.3 Summarize a factor
+
+You would like to know how many "Male" and "Female" responses to your survey. Generate a summary for the survey with `summary()` function:
+```{R}
+summary(survey_vector) # this shows the length, class and mode of the dataset, not what you expect.
+# Generate a summary for the factored survey 
+summary(factor_survey_vector) 
+```
+"Male" and "Female" are nominal (unordered) factor levels and can't be compared.
+
+### 4.4 Ordered factors
+
+Sometimes you will also deal with factors that do have natural ordering. For example, evaluate the performance of 5 data analysts as "slow", "medium" and "fast":
+```{r}
+speed_vector <- c("medium", "slow", "slow", "medium", "fast")
+```
+`speed_vector` should be converted into an ordinal factor since its categories have a natural ordering.
+```{r}
+factor_speed_vector <- factor(speed_vector, ordered = TRUE, levels = c("slow", "medium", "fast"))
+```
+
+-    By setting the argument `ordered` to `TRUE`, you indicate that the factor is ordered. 
+-    With the argument `levels` you give the values of the factor in the correct order.
+
+Now you can compare elements in the vector, for example, compare the performance of data analyst 2 and data analyst 5:
+```{r}
+da2 <- factor_speed_vector[2]
+da5 <- factor_speed_vector[5]
+da2 > da5 
+```

@@ -1,0 +1,114 @@
+---
+title: "INTRODUCTION TO R: TRUE BASICS"
+source: DataCamp
+---
+
+### 1.1 Arithmetic with R
+
+In its most basic form, R can be used as a simple calculator.        
+
+```{r}
+# Addition: +
+5 + 5 
+# Subtraction: -
+5 - 5 
+# Multiplication: *
+3 * 5 
+# Division: /
+(5 + 5) / 2 
+# Exponentiation: ^ (raise the power)
+2 ^ 5 
+# Modulo: %% (returns the remainder of the division)
+28 %% 6 
+```
+
+
+### 2.2 Variable assignment
+
+A *variable* stores a value or an *object*. You can then later use this variable's name to easily access the value or the object that is stored within this variable.
+
+For example, assign the value 23 to `my_var`:
+                 
+```{r}
+my_var <- 23
+```
+
+Print out the value of `my_var`:
+
+```{r}
+my_var
+```
+
+Suppose you have a fruit basket. Store the number of apples and oranges  in variables, then calcuate the total pieces of fruits you have.
+
+```{r}
+my_apples <- 5
+my_oranges <- 6
+my_apples + my_oranges
+```
+
+Assign the result to a new variable `my_fruit`
+
+```{r}
+my_fruit <- my_apples + my_oranges
+# See how many pieces of fruits in total
+my_fruit
+```
+
+
+### 3.3 Basic data types in R
+
+* Decimal values like `4.5` are called *numerics*.
+* Natural numbers like `4` are called *integers*. Integers are also numerics.
+* Boolean values  (`TRUE` or `FALSE`) are called *logical*. 
+* Text or string values are called *characters*.
+
+Assign different values to different types of data:
+
+```{r}
+my_numeric <- 42
+my_character <- "universe"
+my_logical <- FALSE
+```
+
+Use the `class()` function to reveal the data type of a variable.
+
+```{r}
+class(my_numeric)
+class(my_character)
+class(my_logical)
+```
+
+Instead of using `class()` you could ask R if the variable is of a certain type.
+
+```{r}
+is.numeric(2)
+is.numeric(2L)
+is.integer(2)
+is.integer(2L) # interger is numeric, but numeric is not always interger.
+```
+
+Other atomic data types:
+
+-    *double*: higher precision numeric
+
+-    *complex*: complex numbers 
+
+-    *raw*: store raw bytes.
+
+### Coercion
+
+There are occasions when you have to change form one type of data to another. This data transformation is called *coercion*. 
+
+```{r}
+as.numeric(TRUE)
+as.numeric("4")
+as.character(4)
+as.numeric("4.5")
+```
+Coercion is not always possible, or leads to missing values due to incompatible data types.
+
+```{r}
+as.integer(4.5) # return the simplest form of the data.
+as.numeric("Hello")
+```
