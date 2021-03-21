@@ -1,8 +1,8 @@
-# 3. IMPORTING EXCEL DATA
+# 2. IMPORTING EXCEL DATA
 
 # Excel is a widely used data analysis tool. There are already a lot of packages interacting with Excel to deal with the data in R. 
 
-# 3.1 readxl ####
+# 2.1 readxl ####
 # readxl of the tidyverse package makes it easy to get data out of Excel and into R. 
 library(readxl)
 # excel_sheets(): lists the different sheets in the Excel file.
@@ -37,7 +37,7 @@ read_excel("urbanpop.xlsx",
           skip = 21)
 # n_max: specify the number of records to read. 
 
-# 3.2 gdata ####
+# 2.2 gdata ####
 # gdata package is an entire suite of tools for performing data manipulation in all sorts of fields. It supercharges the basic R distribution to make handling the data less painful. 
 install.packages("gdata")
 library(gdata)
@@ -64,7 +64,7 @@ urban_clean <- na.omit(urban)
 # Print out a summary of urban_clean:
 summary(urban_clean)
 
-# 3.3 XLConnect ####
+# 2.3 XLConnect ####
 # XLConnect is one of the most comprehensive packages for working with Excel files through R. It works as a bridge between Excel and R.
 install.packages("XLConnect")
 # XLConnect depends on Java. To run the package you might have to install the Oracle's Java Development Kit (JDK) first.
