@@ -44,26 +44,16 @@
    *3.5 Importing data from web*
 
    *3.6 Importing data from statistical software packages*
-
-**4. CLEANING DATA**
-
-   *4.1 Common data problems*
-
-   *4.2 Categorical and Text Data*
-
-   *4.3 Advanced Data Problems*
-
-   *4.4 Record Linkage*
     
-**5. WRITING EFFICIENT R CODES**
+**4. WRITING EFFICIENT R CODES**
 
-   *5.1 The art of Benchmarking*
+   *4.1 The art of Benchmarking*
 
-   *5.2 Fine Tuning: Efficient Base R*
+   *4.2 Fine Tuning: Efficient Base R*
 
-   *5.3 Diagnosing Problems: Code Profiling*
+   *4.3 Diagnosing Problems: Code Profiling*
 
-   *5.4 Turbo Charged Code: Paralell Programming*
+   *4.4 Turbo Charged Code: Paralell Programming*
 
 
 
