@@ -9,18 +9,18 @@ data_set <- read.csv("dataset.csv")
 plot(data_set$x, data_set$y)
 # Model
 lm(y ~ x, data = data_set)
+# We use R because it's good with statistics.
 
 # 1.1 Optimization ####
 # Simple and first optimization: always keep R up-to-date. New versions of R often provide speed boots, such as improved handling data frames, so your code goes a bit faster.
 # "version" command: returns a list that contains the major and minor version of R currently being used.
 version # version is not a function.
 # Extract the major component of version:
-major <- version$major
+version$major
 # Extract the minor component of version:
-minor <- version$minor
+version$minor
 
 # 1.2 Benchmarking ####
-# Every R programmer at some point found their code slow. To determine if it is worth changing the code, you need to compare your existing solution with one or more alternatives, or in other word, benchmarking.
 # Benchmarking is a 2-step process:
 # Step 1: construct a function around the feature we wish to benchmark.
 # Step 2: time the function under different scenarios.
@@ -39,15 +39,15 @@ seq_by <- function(n) seq(1, n, by = 1)
 # Wrap the functions with system.time() to determine how long the function takes to run:
 system.time(colon(1e8))
 system.time(seq_default(1e8))
-system.time(seq_by(1e8))
+system.time(seq_by(1e8)) # this function is the slowest.
 # Running these codes produces 3 numbers: user, system, and elapsed time.
 # user: CPU time charged for the execution of user instructions.
 # system: CPU time charged for the execution by the system on behalf of the calling process.
 # elapsed: approximately the sum of user and system. This is the number we typically care about. 
 
-# Storing the result: the trouble with system.time() is we haven't stored the result. We need to return the code to store the result.
+# Store the result from system.time():
 res <- colon(1e8)
-# The <- operator performs 2 tasks: argument passing and object assignment, which allow us to store both time and the operation.
+# The "<-" operator performs 2 tasks: argument passing and object assignment, which allow us to store both time and the operation.
 system.time(res <- colon(1e8))
 # The = operator only perform either argument passing or object assignment. 
 system.time(res = colon(1e8)) # return an error.
@@ -67,10 +67,11 @@ microbenchmark(colon(n),
                seq_default(n),
                seq_by(n),
                times = 10) # run each function 10 times.
+# The "cld" column provides a statistical ranking of functions. The colon() is apparently the fastest one. 
 # Using microbenchmark to compare the 2 approaches for reading the movies file:
 microbenchmark(read.csv("movies.csv"),
                readRDS("movies.rds"),
-               times = 10)
+               times = 10) # import rds file is clearly faster.
 
 # 1.4 Benchmarkme package ####
 # The benchmarkme package aims to compare the performance of difference machines on the same code.
@@ -80,8 +81,13 @@ library(benchmarkme)
 res <- benchmark_std(runs = 3)
 # Once the benchmark has completed, you can upload the results and compare with other users.
 plot(res)
-
+upload_results(res)
+# Sometimes having a faster computer will solve the problem. Measuring the performance of your computer is called benchmarking.
 # Obtain the amount of RAM on this machine:
-ram
+get_ram()
 # Obtain the CPU specifications:
 get_cpu()
+# One set of benchmarks tests is reading and writing speeds.
+res <- benchmark_io(runs = 1, size = 5)
+# Compare to other users:
+plot(res)
