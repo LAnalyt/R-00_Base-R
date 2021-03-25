@@ -1,105 +1,124 @@
-# 2. FINE TUNING
+# 3. DIAGNOSING PROBLEMS
 
-# R is flexible because you can often solve a single problem in many different ways. Some ways can be several orders of magnitude faster than the others.
+# In many applications, there is usually a rate limiting selection of code. Essentially a bottle neck that slows down the overall speed of execution. Profiling helps you locate the bottlenecks in your code. 
 
-# 2.1 Memory allocation ####
-# There is no magic solution that will make your R code run faster. Instead, there are numbers of pitfalls you want to avoid.   
-# When you assign a variable, R has to allocate memory in RAM, so an important way to make your code run faster is to minimize the amount of memory allocation R has to perform.
-# Suppose you want to create a sequence of integers again. We know from benchmarking that the most obvious and fastest way is using a colon.
-x <- 1:n
-# Using a for loop is also not too bad.
-x <- vector("numeric", n) # vector with length n.
-for (i in 1:n) {          # loop to change the enter in the vector.
-  x[i] <- i               # the length of x doesn't change in the loop.
-}
-# The final method is similar, but with one crucial exception. The object x starts empty and gradually fills it up with integers. 
-x <- NULL   # length zero
-for (i in 1:n) {
-  x <- c(x, i)
-}
-# Benchmarking 3 methods above
+# 3.1 Code profiling ####
+# The general idea of code profiling is simple. You run your code and take snapshots of what program is doing at regular intervals. This gives the data how long each function took to run.  
+# rprof(): the built-in tool for code profiling, but it's not usef-friendly.
+# Install and load ggplot2movies package for this experiment. 
+install.packages("ggplot2movies")
+library(ggplot2movies)
+data(movies)
+dim(movies) # idmb dataset with around 60000 rows and 24 columns. 
+# Each row corresponds to a movie, e.g, retrieve the data for "Braveheart":
+braveheart <- movies[7288, ]
+braveheart # rating 8.3.
+# Compare the rating of "Braveheart" with other action movies: first extract the Action movies from the dataset. 
+movies <- movies[movies$Action == 1, ]
+# Next generate a scatter plot of year against movies:
+plot(movies$year, movies$rating,
+     xlab = "Year", ylab = "Rating")
+# Fit a local regression line to get an idea of the trend:
+model <- loess(rating ~ year, 
+               data = movies)
+j <- order(movies$year)
+lines(movies$year[j],
+      model$fitted[j],
+      col = "blue")
+# Plot the point of "Braveheart" to highlight it:
+points(braveheart$year,
+       braveheart$rating, 
+       pch = 21,
+       bg = "red")
+# Base plot might be too simple and ggplot2 is more popular. The downside is that when we ggplot, its call stack is complicated. So for this particular case we keep things simple.
+# In RStudio: select the code you want to profile > Profile > Profile Selected Line(s).
+
+# 3.2 profvis ####
+# Alternative is the profvis package.
+install.packages("profvis")
+library(profvis)
+# Use profvis function and pass all the profiled code in {}:
+profvis ({
+  data(movies)
+  dim(movies) 
+  braveheart <- movies[7288, ]
+  movies <- movies[movies$Action == 1, ]
+  plot(movies$year, movies$rating,
+       xlab = "Year", ylab = "Rating")
+  model <- loess(rating ~ year, 
+                 data = movies)
+  j <- order(movies$year)
+  lines(movies$year[j],
+        model$fitted[j],
+        col = "blue")
+  points(braveheart$year,
+         braveheart$rating, 
+         pch = 21,
+         bg = "red")
+})
+# This script generates an interactive page that describes the amount of time we spend on each line of code. The two measurements returned by profvis() are memory used in Mb and time in milliseconds. 
+
+# Examine the code for standard analysis of the idmb movies dataset:
+data(movies)
+profvis({
+  comedies <- movies[movies$Comedy == 1, ] # load and select data
+  plot(comedies$year, comedies$rating)    # plot data of interest
+  model <- loess(rating ~ year, data = comedies) # loes regression line
+  j <- order(comedies$year)
+  lines(comedies$year[j], model$fitted[j], col = "red") # add fitted line
+})
+
+# 3.3 Profvis: larger example ####
+# Suppose you write code to simulate a dice game with two dices:
+df <- data.frame(d1 = sample(1:6, 3, replace = TRUE),
+                 d2 = sample(1:6, 3, replace = TRUE))
+# This can be optimized by switching the data frame with a matrix that generates the 6 dice rolls in a single steps.
+m <- matrix(sample(1:6, 6, replace = TRUE),
+            ncol = 2)
+# Benchmarking the two functions to see the improvement:
 library(microbenchmark)
-n <- 1e8  
-colon <- function(n) 1:n  # fastest
-loop1 <- for (i in 1:n) { # not to bad        
-  x[i] <- i
+d <- function() {
+  data.frame(
+    d1 = sample(1:6, 3, replace = TRUE),
+    d2 = sample(1:6, 3, replace = TRUE)
+  )
 }
-loop2 <- for (i in 1:n) {  # definitely not recommend.
-  x <- c(x, i)
+m <- function() {
+  matrix(sample(1:6, 6, replace = TRUE),
+         ncol = 2)
 }
-microbenchmark(colon(n), 
-               loop1,
-               loop2)
-# Using the colon function, the operation happens so quickly, that even when n is 10 million, it takes less than a millisecond to execute. loop1 pre-allocates the vector that takes a few seconds longer, but not too bad. loop2 could turn to almost unusable, because the code requests for more memory. 
-# First rule in R: never grow a vector! To illustrate this rule, write the growing() that generates n random standard normal numbers, but grow the size of the vector each time an element is added. 
-# standard normal numbers are numbers drawn from a normal distribution with mean 0 and standard deviation 1.
-n <- 30000
-growing <- function(n) {
-  x <- NULL
-  for(i in 1:n)
-    x <- c(x, rnorm(1)) 
-  x
-}
-# Use system.time() to find out how long it takes to generate n:
-system.time(res_grow <- growing(n)) # slow for such a small vector.
-# How long does it take when we pre-allocate the vector? Write a function to measure it:
-pre_locate <- function(n) {
-  x <- numeric(n)
-  for (i in 1:n)
-    x[i] <- rnorm(1)
-  x
-}
-# Run system.time() again:
-system.time(res_allocate <- pre_allocate(n))
-# Pre-allocating the vector is significantly faster than growing the vector! 
-
-# 2.2 Vectorizing code ####
-# When we call an R function we eventually call some C or FORTRAN code. The underlying code is heavily optimized. The general goal is to access this underlying code as quickly as possible; the fewer function calls, the better. This usually means vectorizing code.
-# Many functions in R are vectorized, e.g:
-rnorm(4) # take a number, but returns a vector.
-# Other functions take a vector and return a single value.
-mean(c(36, 48))
-# Generate a million random numbers from the standard distribution:
-n <- 1e6
-x <- vector("numeric", n)
-# Compare with the pre-allocate method:
 microbenchmark(
-  x <- rnorm(n),
-  {
-    for(i in seq_along(x))
-      x[i] <- rnorm(1)
-    },
-  times = 10)
-# The vectorized version of rnorm() is around 40 times faster. That's because the for loop generates one million calls to rnorm(), but the vectorized solution we only need one assignment.
-# Second rule in R code: use a vectorized solution wherever possible.
-# Vectorized code: multiplication
-x <- rnorm(10)
-x2  <- numeric(length(x))
-for(i in 1:10)
-  x2 <- x[i] * x[i]
-# This can be simply rewritten with a vectorized code.
-x2_imp <- x ^ 2
-# A common operation in statistics is to calculate the sum of log probabilities.
-total <- 0
-x <- runif(n)
-for (i in 1:n)
-  total <- total + log(x[i])
-# Rewrite the code:
-sum(log(x))
-# log() can take in a vector and outputs a vector. sum() takes in a vector and returns the sum of all the values in the vector. 
+  data.frame_solution = d(),
+  matrix_solution = m()
+) # Switching to a matrix can save valuable seconds. 
+# To calculate row sums in a matrix, R also provides rowSums(). Compare this function with a normal apply():
+rolls <- matrix(sample(1:6, 6, replace = TRUE), 
+                ncol = 2)
+app <- function(x) {
+  apply(x, 1, sum)
+}
+r_sum <- function(x) {
+  rowSums(x)
+}
+microbenchmark(
+  apply = app(rolls),
+  rowSums = r_sum(rolls)
+) # almost twice faster with rowSums()!
 
-# 2.3 Data frames and matrices ####
-# The key data structure in R is a data frame. A data frame is a tabular structure for representing the data. Technically, columns are variables of interest and rows are observations. A column in a data frame must be the same type. In other word, a data frame is a list of of vectors where each column is a single vector. This means accessing columns is easy, we just find the location of the column and retrieve the entire object. 
-# Retrieving rows is more difficult. You'll need to find the starting location of every single column and then select what you need. 
-# A matrix is similar to a data frame. It has rectangular data structure. You can also perform usual subsetting and extracting operations. The crucial difference is every element in a matrix must be the same data. Selecting rows in a matrix is much easier than in a data frame.
-# Third rule in R: use a matrix when possible.
-
-# Create a matrix of randowm number:
-mat <- matrix(rnorm(10000), nrow = 100)
-# Make a data frame from this matrix:
-df <- data.frame(mat)
-# Benchmarking mat and df: column selection
-microbenchmark(mat[ ,1], df[ ,1])
-# Benchmarking mat and df: row selection
-microbenchmark(mat[1, ], df[1, ])
-# Accessing a row of a data frame is much slower than accessing that of a matrix, more so than when accessing a column from each data type. This is because the values of a column of a data frame must be the same data type,
+# The "&" operator will always evaluate both its arguments. That is, if you type x & y, R will always try to work out what x and y are. There are some cases where this is inefficient. E.g, if x is FALSE, then x & y will always be FALSE, regardless of the value of y. Thus, you can save a little processing time by not calculating it. The "&&" operator takes advantage of this trick, and doesn't bother to calculate y if it doesn't make a difference to the overall result.
+# Example data:
+is_double <- c(FALSE, TRUE, TRUE)
+# is_double[1] is FALSE and we don't need to evaluate is_double[2] or is_double, so we can get a speedup by swapping & for &&.
+# Benchmark these two solutions:
+a <- function(is_double) {
+  if(is_double[1] & is_double[2] & is_double[3]) {
+    next
+  }
+}
+b <- function(is_double) {
+  if(is_double[1] && is_double[2] && is_double[3]) {
+    next
+  }
+}
+microbenchmark(a, b, times = 1e5) # && is slightly faster.
+# "&&" only works on single logical values, i.e., logical vectors of length 1 (like you would pass into an if condition), but "&" also works on vectors of length greater than 1.
