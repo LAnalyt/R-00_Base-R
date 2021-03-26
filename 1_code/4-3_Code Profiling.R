@@ -68,7 +68,7 @@ profvis({
   lines(comedies$year[j], model$fitted[j], col = "red") # add fitted line
 })
 
-# 3.3 Profvis: larger example ####
+# 3.3 More benchmarking ####
 # Suppose you write code to simulate a dice game with two dices:
 df <- data.frame(d1 = sample(1:6, 3, replace = TRUE),
                  d2 = sample(1:6, 3, replace = TRUE))
