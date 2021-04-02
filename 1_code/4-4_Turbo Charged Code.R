@@ -69,4 +69,31 @@ cl <- makeCluster(copies_of_r)
 parApply(cl, m, 1, median)
 # Finally we close the cluster:
 stopCluster(cl)
-# Similarly for sapply() we can run parSapply in paralel.
+# Similarly for sapply() we can run parSapply in paralel. sapply() is just another way to write for loops, by applying a function to each value of vector.
+for (i in 1:10)
+  x[i] <- simulate(i)
+# can be wrtitten as:
+sapply(1:10, simulate) 
+# In general there is little speed difference between a sapply() and a standard loop, but using sapply() makes the code much neater.
+# parSapply() in parallel has the same routine: load package -> create the cluster -> change to parSapply -> close the cluster.
+# Simulate a simple dice game with a function:
+play <- function() {
+  total <- no_of_rolls <- 0
+  while(total < 10) {
+    total <- total + sample(1:6, 1)
+    if(total %% 2 == 0) total <- 0  # if even, reset to 0.
+    no_of_rolls <- no_of_rolls + 1
+  }
+  no_of_rolls
+}
+# Create a cluster: 
+cl <- makeCluster(detectCores())
+# Export the play() function to the cluster:
+clusterExport(cl, "play")
+# Now timing sapply() and parSapply() to compare:
+# Set the number of games to play:
+no_of_games <- 1e5
+system.time(serial <- sapply(1:no_of_games, function(i) play()))
+system.time(par <- parSapply(cl, 1:no_of_games, function(i) play()))
+# Stop the cluster:
+stopCluster(cl)
